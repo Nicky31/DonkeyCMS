@@ -44,9 +44,8 @@ class Loader
                                 array(APP_DIR, SYS_DIR),
                                 $filePath);
         $filePath = BASE_PATH . SEP . $filePath;
-        
         // Déjà inclu
-        if(array_search($filePath, $this->_includes))
+        if(array_search($filePath, $this->_includes) !== FALSE)
             return TRUE;
         
         if(file_exists($filePath))
@@ -55,7 +54,8 @@ class Loader
             $this->_includes[] = $filePath;
             return TRUE;
         }
-
+        
+        throw new Exception('<b>' . __CLASS__ . '</b> : Fichier <b>' . $filePath .'</b> introuvable ! ');
         return FALSE;
     }
     
@@ -64,11 +64,12 @@ class Loader
         $className = fileNameByPath($args1);
         
         if(!class_exists($className))
-        {
-            if($this->getFile($args1))
-                return $this->instanciate($args1, $args2);
-            
-            // Gérer l'erreur fichier introuvable ici
+        {        
+            if(array_search(BASE_PATH . SEP . $args1, $this->_includes) !== FALSE)
+                throw new Exception('<b>' . __CLASS__ .'</b> : <b>'. $className . EXT . '</b> inclut mais classe <b>'. $className .'</b> inexistante ! Les classes doivent porter le même nom que leur fichier !');
+            else
+                if($this->getFile($args1))
+                    return $this->instanciate($args1, $args2);
         }
         else
         {
