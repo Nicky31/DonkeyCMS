@@ -52,12 +52,52 @@ class Donkey
     
     public function run()
     {
+        $this->route();
+        
+        $moduleDir = BASE_PATH . SEP . APP_DIR . '/modules/' . $this->_route['module'] . SEP;
+        if(!is_dir($moduleDir))
+        {
+            throw new Exception('<b>'. __CLASS__ .'</b> : Module <b>'. $this->_route['module'] .'</b> inexistant !');
+            return;
+        }
+        if(!file_exists($moduleDir . 'controllers/' . ucfirst($this->_route['controller']) . EXT))
+        {
+            throw new Exception('<b>'. __CLASS__ .'</b> : Controller <b>'. $this->_route['controller'] .'</b> du module <b>'. $this->_route['module'] .'</b> inexistant !');
+            return;
+        }   
+        
+        $Controller = $this->_loader->instanciate('application/modules/' . $this->_route['module'] . '/controllers/' . ucfirst($this->_route['controller']) . EXT);
+        
+        if(method_exists($Controller, $this->_route['action']))
+            call_user_func(array($Controller,$this->_route['action']));
+        else
+            throw new Exception('<b>' . __CLASS__ . '</b> : Action <b> ' . $this->_route['action'] . '</b> du controller <b> ' . $this->_route['controller'] .'</b> du module <b> ' . $this->_route['module'] . '</b> inexistante ! ');
+        
         
     }
     
     public function route()
     {
+        $module = $this->_sysConfig['defaultModule'];
+        $controller = $this->_sysConfig['defaultController'];
+        $action = $this->_sysConfig['defaultAction'];
         
+        if(!empty($_GET[$this->_sysConfig['routeGet']]))
+        {
+            $route = explode('/',$_GET[$this->_sysConfig['routeGet']]);
+            
+            $module = $route[0];
+            
+            if(sizeof($route) > 1)
+                $controller = $route[1];
+           
+            if(sizeof($route) > 2)
+                $action = $route[2];
+        }
+        
+        $this->_route['module'] = $module;
+        $this->_route['controller'] = $controller;
+        $this->_route['action'] = $action;
     }
     
 }
