@@ -30,7 +30,7 @@ class Loader
     // Tableau des différents fichiers déjà inclus pour ne pas les re-inclure
     private        $_includes    = array();
     
-    public static function &getInstance()
+    public static function &instance()
     {
         if(!self::$instance)
             self::$instance = new self;
@@ -38,7 +38,7 @@ class Loader
         return self::$instance;
     }
     
-    public function getFile($filePath)
+    public function getFile($filePath, $returnContent = FALSE)
     {
         $filePath = str_replace(array('application', 'system'),
                                 array(APP_DIR, SYS_DIR),
@@ -50,8 +50,11 @@ class Loader
         
         if(file_exists($filePath))
         { 
-            include $filePath;
             $this->_includes[] = $filePath;
+            if($returnContent)
+                return include $filePath;
+            
+            include $filePath;
             return TRUE;
         }
         
