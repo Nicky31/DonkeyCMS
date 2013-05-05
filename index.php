@@ -65,6 +65,7 @@ else
     
 session_start(); 
 
+require_once SYS_DIR . SEP . 'core/Singleton' . EXT;
 require_once SYS_DIR . SEP . 'core/Loader' . EXT;
 
 $Loader =& Loader::instance();

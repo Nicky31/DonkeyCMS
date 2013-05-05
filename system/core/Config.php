@@ -4,18 +4,24 @@
  * Gestion des configurations
  */
 
-class ConfigMgr
+class ConfigMgr implements Singleton
 {
-    private static $instance = NULL;
-    private        $_loader  = NULL;
-    private        $_configs = array();
+    // Instance du Config Manager
+    private static $_instance = NULL;
+    // Instance du loader
+    private        $_loader   = NULL;
+    // Tableau des configs instanciées
+    private        $_configs  = array();
     
-    public static function &instance()
+    public static function &instance($args = NULL)
     {
-        if(!self::$instance)
-            self::$instance = new self;
+        if(!self::$_instance)
+            if($args != NULL)
+                self::$_instance = new self($args);
+            else
+                self::$_instance = new self;
         
-        return self::$instance;
+        return self::$_instance;
     }
     
     private function __construct()

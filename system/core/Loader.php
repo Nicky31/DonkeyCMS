@@ -7,35 +7,35 @@ function fileNameByPath($path,$extension = FALSE)
 {
     $slashPos = strrpos($path, SEP);
     if($slashPos == FALSE) // Déjà nom d'un fichier
-    {
-        if(!$extension)
-            $path = substr($path, 0, strlen($path) - strlen(EXT));
-        return $path;
-    }
+        return fileNameByPath (SEP . $path);
     
     $fileName = substr($path,   $slashPos + 1);
     
-    if(!$extension)
+    // Si on doit couper l'extension et qu'il y en a bien une
+    if(!$extension && strrpos($fileName, '.') !== FALSE)
         $fileName = substr($fileName, 0, strlen($fileName) - strlen(EXT));
     
     return $fileName;
 }
 
-class Loader
+class Loader implements Singleton
 {
-    // Instance unique de la classe
-    private static $instance     = NULL;
+    // Instance du loader
+    private static $_instance    = NULL;
     // Tableau de tous les objets instanciés
     private        $_objects     = array();
     // Tableau des différents fichiers déjà inclus pour ne pas les re-inclure
     private        $_includes    = array();
     
-    public static function &instance()
+    public static function &instance($args = NULL)
     {
-        if(!self::$instance)
-            self::$instance = new self;
+        if(!self::$_instance)
+            if($args != NULL)
+                self::$_instance = new self($args);
+            else
+                self::$_instance = new self;
         
-        return self::$instance;
+        return self::$_instance;
     }
     
     public function getFile($filePath, $returnContent = FALSE)
@@ -84,7 +84,11 @@ class Loader
                 array_shift($args);
             }
        
-            $obj = $args != NULL ? new $className($args) : new $className;
+            if(array_search('Singleton',class_implements($className)) === FALSE)
+                $obj = $args != NULL ? new $className($args) : new $className;
+            else // Instanciation par singleton
+                $obj = $args != NULL ? $className::instance($args) : $className::instance();
+            
             if(!isset($this->_objects[$className]))
                 $this->_objects[$className] = array();
             

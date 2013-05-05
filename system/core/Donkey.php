@@ -38,15 +38,20 @@
 
 class Donkey
 {
+    // Instance du loader
     private $_loader    = NULL;
+    // Tableau du routage (module/contrôleur/action)
     private $_route     = array();
+    // Classe config du système
     private $_sysConfig = NULL;
     
     public function __construct(&$Loader)
     {
-        $Loader->getFile('system/core/Config' . EXT);
         $this->_loader =& $Loader;
-        $this->_sysConfig = ConfigMgr::instance()->loadConfig('application/config/sys_config' . EXT, 'sysConfig');
+
+        $Loader->getFile('system/core/Config' . EXT);
+        $ConfigMgr =& $Loader->instanciate('ConfigMgr');
+        $this->_sysConfig = $ConfigMgr->loadConfig('application/config/sys_config' . EXT, 'sysConfig');
         set_exception_handler('exception_handler');
     }
     
