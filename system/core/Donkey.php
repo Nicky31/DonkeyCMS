@@ -49,9 +49,8 @@ class Donkey
     {
         $this->_loader =& $Loader;
 
-        $Loader->getFile('system/core/Config' . EXT);
-        $ConfigMgr =& $Loader->instanciate('ConfigMgr');
-        $this->_sysConfig = $ConfigMgr->loadConfig('application/config/sys_config' . EXT, 'sysConfig');
+        $ConfigMgr =& $Loader->instanciate('system/core/Config/ConfigMgr');
+        $this->_sysConfig = $ConfigMgr->loadConfig('application/config/sys_config', 'sysConfig');
         set_exception_handler('exception_handler');
     }
     

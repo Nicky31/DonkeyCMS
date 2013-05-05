@@ -40,6 +40,10 @@ class Loader implements Singleton
     
     public function getFile($filePath, $returnContent = FALSE)
     {
+        // On ajoute l'extension par défaut si aucune n'est renseignée
+        if(strrpos(fileNameByPath($filePath, TRUE), '.') === FALSE)
+            $filePath .= EXT;
+        
         $filePath = str_replace(array('application', 'system'),
                                 array(APP_DIR, SYS_DIR),
                                 $filePath);
@@ -63,7 +67,10 @@ class Loader implements Singleton
     }
     
     public function &instanciate($args1 = NULL, $args2 = NULL)
-    {
+    {   
+        // On ajoute l'extension par défaut si aucune n'est renseignée
+        if(strrpos(fileNameByPath($args1, TRUE), '.') === FALSE)
+                $args1 .= EXT;
         $className = fileNameByPath($args1);
         
         if(!class_exists($className))

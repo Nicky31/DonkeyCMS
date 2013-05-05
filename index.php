@@ -70,5 +70,5 @@ require_once SYS_DIR . SEP . 'core/Loader' . EXT;
 
 $Loader =& Loader::instance();
 
-$Donkey =& $Loader->instanciate('system/core/Donkey' . EXT, $Loader);
+$Donkey =& $Loader->instanciate('system/core/Donkey', $Loader);
 $Donkey->run();
