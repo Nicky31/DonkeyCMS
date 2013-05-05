@@ -44,7 +44,7 @@ class ConfigMgr implements Singleton
             'path' => $path,
             'name' => $name
         );
-        return $this->_configs[$name] = $this->_loader->instanciate('system/core/Config/Config',$params);
+        return $this->_configs[$name] =& $this->_loader->instanciate('system/core/Config/Config',$params);
     }
     
     public function getConfig($name)

@@ -40,10 +40,10 @@ class Donkey
 {
     // Instance du loader
     private $_loader    = NULL;
-    // Tableau du routage (module/contrôleur/action)
-    private $_route     = array();
     // Classe config du système
     private $_sysConfig = NULL;
+    // Tableau des modules chargés
+    private $_modules   = array();
     
     public function __construct(&$Loader)
     {
@@ -56,30 +56,35 @@ class Donkey
     
     public function run()
     {
-        $this->route();
-        
-        $moduleDir = BASE_PATH . SEP . APP_DIR . '/modules/' . $this->_route['module'] . SEP;
-        if(!is_dir($moduleDir))
-        {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Module <b>'. $this->_route['module'] .'</b> inexistant !');
-            return;
-        }
-        if(!file_exists($moduleDir . 'controllers/' . ucfirst($this->_route['controller']) . EXT))
-        {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Controller <b>'. $this->_route['controller'] .'</b> du module <b>'. $this->_route['module'] .'</b> inexistant !');
-            return;
-        }   
-        
-        $Controller = $this->_loader->instanciate('application/modules/' . $this->_route['module'] . '/controllers/' . ucfirst($this->_route['controller']) . EXT);
-        
-        if(method_exists($Controller, $this->_route['action']))
-            call_user_func(array($Controller,$this->_route['action']));
-        else
-            throw new Exception('<b>' . __CLASS__ . '</b> : Action <b> ' . $this->_route['action'] . '</b> du controller <b> ' . $this->_route['controller'] .'</b> du module <b> ' . $this->_route['module'] . '</b> inexistante ! ');
-        
-        
+        $route = $this->route();
+        $this->runModule($route['module'], $route['controller'], $route['action']);
     }
     
+    public function runModule($module,$controller,$action)
+    {
+        $moduleDir = BASE_PATH . SEP . APP_DIR . '/modules/' . $module . SEP;
+        if(!is_dir($moduleDir))
+        {
+            throw new Exception('<b>'. __CLASS__ .'</b> : Module <b>'. $module .'</b> inexistant !');
+            return;
+        }
+        
+        $this->_loader->getFile('system/core/module/Module');
+        $params = array(
+            'name' => $module,
+            'controller' => $controller
+        );
+        // Une surcharge de la classe module existe
+        if(file_exists($moduleDir . ucfirst($module) . EXT))        
+            $module =& $this->_loader->instanciate('application/modules/' . $module . '/' . ucfirst($module), $params);
+        else
+            $module =& $this->_loader->instanciate('Module', $params);
+            
+        $this->_modules[] =& $module;   
+        $module->run($action);
+    }
+
+
     public function route()
     {
         $module = $this->_sysConfig['defaultModule'];
@@ -98,10 +103,12 @@ class Donkey
             if(sizeof($route) > 2)
                 $action = $route[2];
         }
-        
-        $this->_route['module'] = $module;
-        $this->_route['controller'] = $controller;
-        $this->_route['action'] = $action;
+
+        return array(
+            'module' => $module,
+            'controller' => $controller,
+            'action' => $action
+        );
     }
     
 }

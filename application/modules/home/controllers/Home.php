@@ -1,6 +1,6 @@
 <?php
 
-class Home
+class Homef
 {
     public function index()
     {
