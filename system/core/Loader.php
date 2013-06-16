@@ -1,4 +1,37 @@
 <?php
+
+    /*
+     * Attrape les exceptions & les affiche en stoppant l'exécution du système
+     * $exception > Objet exception
+     * Merci @SgtFatality, auteur de la fonction
+     */
+    function exception_handler($exception)
+    {
+        if(!DEBUG_MODE)
+            exit('<script>alert(\'Une erreur est survenue, veuillez excuser la potentielle gêne occasionnée.\');</script>');
+        
+        $trace = '';
+        foreach($exception->getTrace() as $k => $v)
+        {
+            if(!empty($v['line']) AND !empty($v['file']))
+            {
+                $function = !empty($v['function']) ? ' <strong> dans la fonction </strong>'. $v['function'] .'('. @implode(', ',$v['args']) .')' : '';
+                $class = !empty($v['class']) ? ' <strong> de la classe</strong> '. $v['class'] : '';
+                $trace .= '<strong>Ligne : </strong>' . $v['line'] . ' <strong>du fichier : </strong> ' . $v['file'] . $function . $class .'<br />';
+            }
+        }
+        
+        exit('<html lang="fr"><head><meta charset="utf-8" /> <title>Exception survenue</title > </head>
+              <div style="background-color: #F6DDDD; border: 1px solid #FD1717; color: #8C2E0B; padding: 10px;">
+              <h4>Une exception est survenue</h4>
+              <strong>Message : </strong>' . $exception->getMessage() . '<br /><br />
+              <strong>Ligne : </strong>' . $exception->getLine() . ' <strong>du fichier : </strong> ' . $exception->getFile() . '<br /><br />
+              <strong>Appel : </strong><br /><pre>'
+              . $trace .
+              '</pre></div>
+               </html>');
+    }
+
 /*
  * Gestion des chargements de classes / autres
  */
@@ -10,35 +43,24 @@ class Loader extends Singleton
     // Tableau des différents fichiers déjà inclus pour ne pas les re-inclure
     private        $_includes    = array();
     
-    public static function autoloads()
+    protected function __construct()
     {
-        
-        
+        set_exception_handler('exception_handler');
+        self::autoloads();
     }
     
-    private static function fileNameByPath($path,$extension = FALSE)
+    public static function autoloads()
     {
-        $slashPos = strrpos($path, SEP);
-        if($slashPos == FALSE) // Déjà nom d'un fichier
-            return self::fileNameByPath (SEP . $path);
-        $fileName = substr($path,   $slashPos + 1);
-
-        // Si on doit couper l'extension et qu'il y en a bien une
-        if(!$extension && strrpos($fileName, '.') !== FALSE)
-            $fileName = substr($fileName, 0, strlen($fileName) - strlen(EXT));
-
-        return $fileName;
+        require_once 'SystemHelper.php';
+        require_once 'Lang.php';
+        Lang::loadTranslations('system','system/langs');
     }
-
     
     public function getFile($filePath, $returnContent = FALSE, $throw = TRUE)
     {   
-        $filePath = str_replace(array('inc', 'system', 'modules', '/', '\\'),
-                                array(INC_DIR, SYS_DIR, MODS_DIR, SEP, SEP),
-                                $filePath);
-        // On ajoute l'extension par défaut si aucune n'est renseignée
-        if(strrpos(self::fileNameByPath($filePath, TRUE), '.') === FALSE)
-            $filePath .= EXT;
+        $filePath = parsePath($filePath);
+         // On ajoute l'extension par défaut si aucune n'est renseignée
+        $filePath = appendExt($filePath);
 
         $filePath = BASE_PATH . SEP . $filePath;
         // Déjà inclu
@@ -62,13 +84,11 @@ class Loader extends Singleton
     
     public function &instanciate($args1, $args2 = NULL, $throw = TRUE)
     {   
-        $args1 = str_replace(array('/','\\'),
-                             array(SEP, SEP), 
-                             $args1);
+        $args1 = parsePath($args1);
         // On ajoute l'extension par défaut si aucune n'est renseignée
-        if(strrpos(self::fileNameByPath($args1, TRUE), '.') === FALSE)
-                $args1 .= EXT;
-        $className = self::fileNameByPath($args1);
+        $args1 = appendExt($args1);
+        
+        $className = basename($args1, EXT);
         
         if(!class_exists($className))
         {        
@@ -83,7 +103,6 @@ class Loader extends Singleton
         }
         else
         {
-            //var_dump(func_get_args());
             if(func_num_args() == 2)
                 $args = $args2;
             else

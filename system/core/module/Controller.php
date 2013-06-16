@@ -79,8 +79,18 @@ abstract class Controller
         if(!is_dir(MODS_PATH . $this->module()->name() .'/themes/' . $_GET['theme']))
             return;
         
-        $_SESSION[SESSIONDONKEY]['modules'][$this->module()->name()]['defaultTheme'] = $_GET['theme'];
+        setcookie(DATASDONKEY .'[modules]['.$this->module()->name().'][defaultTheme]', $_GET['theme'], time() + 365*24*3600, null, null, false, true);
         echo redirect();
     }
     
+    public function selectLang()
+    {
+        call_user_func_array(array($this,DEFAULTACTION), array());
+        
+        if(empty($_GET['lang']))
+            return;
+        
+        setcookie(DATASDONKEY .'[defaultLang]', $_GET['lang'], time() + 365*24*3600, null, null, false, true);
+        echo redirect(); 
+    }
 }

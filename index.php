@@ -26,6 +26,11 @@ define('BASE_URL',   'http://localhost/DonkeyCMS');
  * Mettre false en période de production pour gagner des performances et cacher des informations sensibles visibles sur les erreurs
  */
 define('DEBUG_MODE', TRUE);
+/*
+ * Langue par défaut :
+ * Valeur = nom des sous dossiers correspondants à la langue dans chaque module
+ */
+define('DEFAULT_LANG', 'fr');
 
 // Configuration secondaire reservée aux développeurs :
 /*
@@ -44,8 +49,6 @@ define('SEP',        DIRECTORY_SEPARATOR);
 define('SYS_DIR',    'system');
 define('INC_DIR',    'inc');
 define('MODS_DIR',   'modules');
-define('ASSETS_DIR', 'themes');
-define('UP_DIR',     'uploads');
 define('SHARED_DIR', 'shared');
 /*
  * Arborescence : chemins principaux

@@ -1,1 +1,1 @@
-Theme custom. View custom.
+<?php pTr("vue");

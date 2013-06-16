@@ -28,7 +28,7 @@ class Module
         
         if(file_exists($moduleDir . 'config/' . $this->_configName))
         {
-            $this->_config =& ConfigMgr::instance()->loadConfig('modules/' . $params['name'] . '/config/myConfig.php', ucfirst($this->_name) . 'ModuleConfig');   
+            $this->_config =& ConfigMgr::instance()->loadConfig('modules/' . $params['name'] . '/config/myConfig.php', ucfirst($params['name']) . 'ModuleConfig');   
         }
         else
         {

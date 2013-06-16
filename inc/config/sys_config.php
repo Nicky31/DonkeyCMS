@@ -9,7 +9,7 @@ return array(
     'defaultModule' => 'home',
     // Controller par défaut si non indiqué dans la route. Utilisé pour tous les modules
     'defaultController' => 'home',
-    // Méthode par défaut si non indiquée dans la route. Utilisé pour tous les modyles
+    // Méthode par défaut si non indiquée dans la route. Utilisé pour tous les modules
     'defaultAction' => 'index',
     // Nom du $_GET indiquant la route
     'routeGet' => 'p',
@@ -23,6 +23,6 @@ return array(
     'defaultTheme' => 'default',
     // Nom du thème partagé par les autres thèmes de chaque module. Modifiable dans la config des modules sur le même index
     'sharedTheme' => 'shared',
-    // Nom de la $_SESSION relative aux données internes de DonkeyCMS
-    'sessionDonkey' => 'DonkeyDatas'
+    // Nom des sessions & cookies relatifs aux données internes de DonkeyCMS
+    'datasDonkey' => 'DonkeyDatas'
 );

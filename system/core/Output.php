@@ -33,8 +33,8 @@ class Output extends Singleton
         // Valeur par défaut $module  = 0 => Module principal demandé si aucun renseigné
         $curTheme = Donkey::instance()->module($module)->config()->item('defaultTheme');
         $moduleName = Donkey::instance()->module($module)->name();
-        if(isset($_SESSION[SESSIONDONKEY]['modules'][$moduleName]['defaultTheme']))
-            $curTheme = $_SESSION[SESSIONDONKEY]['modules'][$moduleName]['defaultTheme'];
+        if(isset($_COOKIE[DATASDONKEY]['modules'][$moduleName]['defaultTheme']))
+            $curTheme = $_COOKIE[DATASDONKEY]['modules'][$moduleName]['defaultTheme'];
         
         return $curTheme;
     }
