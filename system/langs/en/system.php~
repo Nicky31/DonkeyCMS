@@ -1,0 +1,5 @@
+<?php
+
+$trs['vue'] = 'This is the first view';
+
+return $trs;
