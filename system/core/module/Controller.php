@@ -72,7 +72,7 @@ abstract class Controller
     
     public function selectTheme()
     {
-        call_user_func_array(array($this,DEFAULTACTION), array());
+        call_user_func_array(array($this, DEFAULTACTION), array());
         
         if(empty($_GET['theme']))
             return;

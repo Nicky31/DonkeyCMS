@@ -81,8 +81,8 @@ else
     
 session_start(); 
 
-require_once SYS_PATH . 'core/Singleton' . EXT;
-require_once SYS_PATH . 'core/Loader' . EXT;
+require SYS_PATH . 'core/Singleton' . EXT;
+require SYS_PATH . 'core/Loader'    . EXT;
 
 $Loader =& Loader::instance();
 

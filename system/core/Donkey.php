@@ -35,6 +35,10 @@ class Donkey extends Singleton
             'action'     => $this->_sysConfig['defaultAction'],
             'args'       => array()
         );
+        
+        $Loader->getFile('system/core/input/Input');
+        Input::loadDevices();
+        echo Input::get('p', 'GET');
     }
     
     public function run()

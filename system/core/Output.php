@@ -72,7 +72,7 @@ class Output extends Singleton
     {  
         $template = array(
             'module' => MAIN_MODULE,
-            'theme' => self::themeOfModule(Donkey::instance()->module(0)->name())
+            'theme' => self::themeOfModule(MAIN_MODULE)
         );
         
         if(!file_exists($templatePath = MODS_PATH . $template['module'] . '/themes/' . $template['theme'] . '/template.php'))
