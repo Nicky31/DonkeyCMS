@@ -1,4 +1,4 @@
 Options FollowSymLinks
 RewriteEngine On
-RewriteCond $1 !^(index\.php|assets/|robots\.txt)
+RewriteCond $1 !^(index\.php|modules/)
 RewriteRule ^(.*)$ index.php/$1 [L]
