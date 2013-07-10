@@ -19,11 +19,22 @@ class Donkey extends Singleton
     {
         $this->_loader =& $Loader;
 
-        $ConfigMgr =& $Loader->instanciate('system/core/config/ConfigMgr');
+        // Config Manager
+        $ConfigMgr = $Loader->instanciate('system/core/config/ConfigMgr');
         
+        // Chargement configuration système
         $this->_sysConfig =& $ConfigMgr->loadConfig('inc/config/sys_config', 'sysConfig');
         $this->_sysConfig->toConstants();
         $this->autoloads();
+        
+        // Router
+        $Loader->getFile('system/core/Router');
+        Router::$_defaultRoute = array(
+            'module'     => $this->_sysConfig['defaultModule'],
+            'controller' => $this->_sysConfig['defaultController'],
+            'action'     => $this->_sysConfig['defaultAction'],
+            'args'       => array()
+        );
     }
     
     public function run()
@@ -31,17 +42,21 @@ class Donkey extends Singleton
         $this->_loader->getFile('system/core/module/Controller');
         $this->_loader->getFile('system/core/module/Module');
         
-        $this->_output =& $this->_loader->instanciate('system/core/Output', $this);
+        $this->_output = $this->_loader->instanciate('system/core/Output', $this);
         
-        $route = $this->route();
+        $route = Router::getRouteArray(Router::getPathInfo());
         $this->runModule($route['module'], $route['controller'], $route['action']);
+        
+        define('MAIN_MODULE',     $route['module']);
+        define('MAIN_CONTROLLER', $route['controller']);
+        define('MAIN_ACTION',     $route['action']);
         
         $this->_output->render();
     }
     
     public function runModule($module,$controller,$action)
     {
-        $moduleDir = MODS_PATH . $module . SEP;
+        $moduleDir = MODS_PATH . strtolower($module) . SEP;
         if(!is_dir($moduleDir))
         {
             throw new Exception('<b>'. __CLASS__ .'</b> : Module <b>'. $module .'</b> inexistant !');
@@ -72,34 +87,6 @@ class Donkey extends Singleton
         
         $this->_modules[] =& $moduleObj;   
         $moduleObj->run($action);
-    }
-
-
-    public function route()
-    {
-        $module = $this->_sysConfig['defaultModule'];
-        $controller = $this->_sysConfig['defaultController'];
-        $action = $this->_sysConfig['defaultAction'];
-        
-        if(!empty($_GET[$this->_sysConfig['routeGet']]))
-        {
-            $route = explode('/',$_GET[$this->_sysConfig['routeGet']]);
-            
-            if(!empty($route[0]))
-                $module = $route[0];
-            
-            if(sizeof($route) > 1 && !empty($route[1]))
-                $controller = $route[1];
-           
-            if(sizeof($route) > 2 && !empty($route[2]))
-                $action = $route[2];
-        }
-
-        return array(
-            'module' => $module,
-            'controller' => $controller,
-            'action' => $action
-        );
     }
     
     public function &module($target = NULL)

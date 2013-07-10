@@ -19,7 +19,7 @@
                     <li><?php echo url('Theme custom', 'home/home/selectTheme','theme=custom');?></li>
                     <li><?php echo url('Theme par defaut', 'home/home/selectTheme','theme=default');?></li>
                     <li><?php echo url('Controller Home');?></li>
-                    <li><?php echo url('Controller Test','home/test');?></li>
+                    <li><?php echo url('Controller Test','home/test', array('arg1', 'arg2'));?></li>
                 </ul>
             </div>
 

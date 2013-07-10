@@ -20,11 +20,9 @@ abstract class Lang
         // Aucun chemin spécifié : on le détermine à partir du module à l'origine de cet appel
         if($dir == '')
         {
-            $dir = MODS_DIR . SEP;
             $callContext = debug_backtrace();
             $callContext = $callContext[1];
-            $dir .= $callContext['object']->module()->name();
-            $dir .= '/langs';
+            $dir = MODS_DIR . SEP . $callContext['object']->module()->name() . '/langs';
         }
         else
         {
@@ -37,10 +35,9 @@ abstract class Lang
         foreach($availableLangages as $curLangage)
         {
             $curLangage = basename($curLangage, SEP);
-            //echo BASE_PATH . SEP . $dir . SEP . $curLangage . $name .'<br>';
             if(file_exists($langPath = BASE_PATH . SEP . $dir . SEP . $curLangage . SEP . $name))
             {
-                $newTranslations = include_once $langPath;
+                $newTranslations = include $langPath;
                 if(empty(self::$_translations[$curLangage]))
                 {
                     self::$_translations[$curLangage] = $newTranslations;
@@ -90,7 +87,6 @@ abstract class Lang
     
     public static function userLang()
     {
-        $userLang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        return $userLang[0].$userLang[1];
+        return $_SERVER['HTTP_ACCEPT_LANGUAGE'][0].$_SERVER['HTTP_ACCEPT_LANGUAGE'][1];
     }
 }

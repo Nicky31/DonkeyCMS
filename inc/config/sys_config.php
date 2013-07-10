@@ -24,5 +24,7 @@ return array(
     // Nom du thème partagé par les autres thèmes de chaque module. Modifiable dans la config des modules sur le même index
     'sharedTheme' => 'shared',
     // Nom des sessions & cookies relatifs aux données internes de DonkeyCMS
-    'datasDonkey' => 'DonkeyDatas'
+    'datasDonkey' => 'DonkeyDatas',
+    // Extension ajoutée à la fin des urls : Facultatif, uniquement à but esthétique 
+    'uriExt'      => '.html'
 );

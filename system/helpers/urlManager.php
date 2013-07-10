@@ -77,13 +77,13 @@ function img($nom, $alt = '')
     return '<img src="' . img_url($nom) . '" alt="' . $alt . '" />';
 }
 
-function redirect($url = '', $time = 0)
+function redirect($url, $time = 0)
 {
     // On reste sur le site
     if((is_string($url) && substr($url, 0, 4) != 'http') || (is_array($url) && substr($url['module'], 0, 4) != 'http')) 
     {
         if(is_array($url))
-            @$url = site_url($url['module'], $url['gets']);
+            $url = site_url($url, (isset($url['gets']) ? $url['gets'] : array()));
         else
             $url = site_url($url);
     }
@@ -91,29 +91,45 @@ function redirect($url = '', $time = 0)
     return '<meta http-equiv="refresh" content="'. $time .';URL='. $url .'">';
 }
 
-function refresh()
+function refresh($keepVars = FALSE)
 {
-    return redirect($_GET['p']);
+    $route = array(
+        'module'     => MAIN_MODULE,
+        'controller' => MAIN_CONTROLLER,
+        'action'     => MAIN_ACTION
+    );
+   
+    return redirect($route);
 }
 
-function site_url($module = '', $gets = '')
+function site_url($module = array(), $gets = array())
 {		
-    if(is_array($module) && !empty($module))
+    if(!is_array($module) && !empty($module))
     {
-        $module = $module['module'];
-        @$gets = $module['gets'];
+        $moduleExplode = explode('/', $module);
+        unset($module);
+        $module['module'] = $moduleExplode[0];
+        
+        if(isset($moduleExplode[1]))
+        {
+            $module['controller'] = $moduleExplode[1];
+        }
+        
+        if(isset($moduleExplode[2]))
+        {
+            $module['action'] = $moduleExplode[2];
+        }
     }
     
-    $stringUrl = BASE_URL .'/index.php';	
-		
-    $stringUrl .= '?' . ROUTEGET . '=' . $module;
-    if($gets != '')
-        $stringUrl .= '&'. $gets;
+    if(!empty($gets))
+    {
+        $module['args'] = $gets;
+    }
     
-    return $stringUrl;
+    return Router::getRouteStr($module);
 }
 
-function url($text, $module = '', $gets = '')
+function url($text, $module = array(), $gets = array())
 {	
     echo '<a href="' . site_url($module, $gets) . '">' . htmlentities($text) . '</a>';
     return '';

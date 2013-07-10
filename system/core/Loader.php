@@ -51,18 +51,17 @@ class Loader extends Singleton
     
     public static function autoloads()
     {
-        require_once 'SystemHelper.php';
-        require_once 'Lang.php';
+        require 'SystemHelper.php';
+        require 'Lang.php';
         Lang::loadTranslations('system','system/langs');
     }
     
     public function getFile($filePath, $returnContent = FALSE, $throw = TRUE)
     {   
-        $filePath = parsePath($filePath);
-         // On ajoute l'extension par défaut si aucune n'est renseignée
-        $filePath = appendExt($filePath);
-
+        // On ajoute l'extension par défaut si aucune n'est renseignée
+        $filePath = appendExt(parsePath($filePath));
         $filePath = BASE_PATH . SEP . $filePath;
+        
         // Déjà inclu
         if(array_search($filePath, $this->_includes) !== FALSE)
             return TRUE;

@@ -71,7 +71,7 @@ class Output extends Singleton
     public function render()
     {  
         $template = array(
-            'module' => Donkey::instance()->module(0)->name(),
+            'module' => MAIN_MODULE,
             'theme' => self::themeOfModule(Donkey::instance()->module(0)->name())
         );
         
