@@ -37,8 +37,7 @@ class Donkey extends Singleton
         );
         
         $Loader->getFile('system/core/input/Input');
-        Input::loadDevices();
-        echo Input::get('p', 'GET');
+        Input::init();
     }
     
     public function run()

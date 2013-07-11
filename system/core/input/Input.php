@@ -11,15 +11,22 @@ abstract class Input
      * Tableau des différents supports de données entrantes
      * Ex.: GET, POST, FILES, etc ...
      */
-    public static $devices = array();
+    public static $_devices = array();
+    /*
+     * Configuration de la sécurité
+     */
+    public static $_config  = array();
     
     /*
      * Inclue les classes des différents supports
      */
-    public static function loadDevices()
+    public static function init()
     {
-        include 'DeviceInterface.php';
-        include 'GetDevice.php';
+        // On récupère le tableau de config et non l'objet pour ne pas que la classe Config lance des exceptions non désirées
+        self::$_config = ConfigMgr::instance()->loadConfig('inc/config/security_config', 'securityConfig')->content();
+        
+        // Chargement des classes handlers
+        include 'BasicDevice.php';
     }
     
     /*
@@ -27,20 +34,27 @@ abstract class Input
      */
     public static function registerInputDevice($deviceName, Closure $c)
     {
-        self::$devices[$deviceName] = function($k) use($c)
+        if(isset(self::$_devices[$deviceName]))
         {
-            return $c($k);
-        };
+            throw new Exception('<b>'. __CLASS__ .'</b> : Enregistrement d\'un support <b>'. $deviceName .'</b> déjà enregistré !');
+            return;
+        }
+        
+        self::$_devices[$deviceName] = $c;
     }
     
     /*
-     * Accède à une donnée entrante via les closures
+     * Accède à une donnée entrante via les handlers
      */
-    public static function get($k, $device)
+    public static function get($k, $device, $options = array())
     {
-        $device = self::$devices[$device];
-        $data = $device($k);
-       
-        return $data;
+        if(!isset(self::$_devices[$device]))
+        {
+            throw new Exception('<b>'. __CLASS__ .'</b> : Support <b>'. $device .'</b> inexistant ou non-enregistré.');
+            return;
+        }
+        
+        $device = self::$_devices[$device];       
+        return $device($k, $options);
     }
 }
