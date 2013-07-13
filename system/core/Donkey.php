@@ -48,6 +48,7 @@ class Donkey extends Singleton
         $this->_output = $this->_loader->instanciate('system/core/Output', $this);
         
         $route = Router::getRouteArray(Router::getPathInfo());
+        Router::setCurRouteParams($route['args']);
         $this->runModule($route['module'], $route['controller'], $route['action']);
         
         define('MAIN_MODULE',     $route['module']);
@@ -57,7 +58,7 @@ class Donkey extends Singleton
         $this->_output->render();
     }
     
-    public function runModule($module,$controller,$action)
+    public function runModule($module, $controller, $action)
     {
         $moduleDir = MODS_PATH . strtolower($module) . SEP;
         if(!is_dir($moduleDir))

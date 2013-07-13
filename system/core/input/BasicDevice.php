@@ -4,8 +4,8 @@
  */
 
 /*
- * On enregistre le support
- */
+ * On enregistre le support ...
+ */        
 Input::registerInputDevice('GET', function($k, $options = array())
 {
     return BasicDevice::processGetRequest($k, $options);
@@ -17,10 +17,11 @@ Input::registerInputDevice('POST', function($k, $options = array())
 
 abstract class BasicDevice
 {
+    
     public static function processGetRequest($k, $options = array())
     {
-        $val = self::getData($k, $_GET, $options);
-        return ($val != NULL) ? self::secureData($val, 'GET', $options) : NULL;
+        $val = self::getData($k, Router::getCurRouteParams(), $options);
+        return ($val != NULL) ? self::secureData(array($k, $val), 'GET', $options) : NULL;
     }
     
     public static function processPostRequest($k, $options = array())
@@ -67,7 +68,7 @@ abstract class BasicDevice
                 break;
             endswitch;
         }
-        
+
         if(($maxSize = $configGetter('maxSize')) !== FALSE)
         {
             if(is_numeric($data[1]))

@@ -44,7 +44,7 @@ class Module
     
     public function run($action)
     {
-         if(method_exists($this->_controller, $action))
+        if(method_exists($this->_controller, $action))
             call_user_func(array($this->_controller,$action));
         else
             throw new Exception('<b>' . __CLASS__ . '</b> : Action <b> ' . $action . '</b> du controller <b> ' . get_class($this->_controller) .'</b> du module <b> ' . $this->_name . '</b> inexistante ! ');

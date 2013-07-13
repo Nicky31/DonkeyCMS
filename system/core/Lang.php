@@ -21,7 +21,7 @@ abstract class Lang
         if($dir == '')
         {
             $callContext = debug_backtrace();
-            $callContext = $callContext[1];
+            list(, $callContext) = debug_backtrace();
             $dir = MODS_DIR . SEP . $callContext['object']->module()->name() . '/langs';
         }
         else
@@ -58,11 +58,11 @@ abstract class Lang
     
     public static function tr($name, $args = array())
     {
-        $l = self::curLang();
+        $cookieLang = self::cookieLang();
         // Langue stockée en cookie & donc choisie par l'utilisateur ?
-        if(isset(self::$_translations[$l][$name]))
+        if(isset(self::$_translations[$cookieLang][$name]))
         {
-            return vsprintf(self::$_translations[$l][$name], $args);
+            return vsprintf(self::$_translations[$cookieLang][$name], $args);
         }
         // Langue de l'utilisateur détectée automatiquement ? 
         else if(isset(self::$_translations[self::userLang()][$name]))
@@ -80,7 +80,7 @@ abstract class Lang
         }
     }
     
-    public static function curLang()
+    public static function cookieLang()
     {
         return isset($_COOKIE[DATASDONKEY]['defaultLang']) ? $_COOKIE[DATASDONKEY]['defaultLang'] : '';
     }

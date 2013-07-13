@@ -12,7 +12,11 @@ abstract class Router
      * ['controller'] = controller du module utilisé par défaut
      * ['action']     = méthode du controller appelée par défaut
      */
-    public static $_defaultRoute = array();
+    public static $_defaultRoute    = array();
+    /*
+     * Tableau des paramètres de l'url actuelle
+     */
+    private static $_curRouteParams = array();
     
     /*
      * Retourne un tableau de données extraites de l'uri suivant un pattern
@@ -115,5 +119,15 @@ abstract class Router
         
         // Chemin complet renseigné dans l'array
         return $urlStr . '-' . implode('-', (array)$route['args']) . URIEXT;
+    }
+    
+    public static function setCurRouteParams($params)
+    {
+        self::$_curRouteParams = $params;
+    }
+    
+    public static function getCurRouteParams()
+    {
+        return self::$_curRouteParams;
     }
 }

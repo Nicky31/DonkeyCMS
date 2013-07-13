@@ -53,7 +53,7 @@ class Loader extends Singleton
     {
         require 'SystemHelper.php';
         require 'Lang.php';
-        Lang::loadTranslations('system','system/langs');
+        Lang::loadTranslations('system', 'system/langs');
     }
     
     public function getFile($filePath, $returnContent = FALSE, $throw = TRUE)
@@ -120,7 +120,7 @@ class Loader extends Singleton
             
             $this->_objects[$className][] =& $obj;
             
-            return $obj;   
+            return $obj;
         }
     }
     
