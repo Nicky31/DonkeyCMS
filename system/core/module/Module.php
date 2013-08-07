@@ -4,42 +4,42 @@
  * Classe contenant un module respectant le pattern MVC
  */
 
-class Module
+class Module extends ModuleComponent
 {
-    // Nom du module
-    protected $_name       = NULL;
     // Classe controller chargée
     protected $_controller = NULL;
     // Tableau des différents modèles chargés
     protected $_models     = array();
     // Nom de la configuration principale du module
     protected $_configName = 'config.php';
-    // Configuration principale du module
-    protected $_config     = NULL;
-    
+    // Views chargées par le module et extraites lors de l'affichage du layout
+    protected $_views      = array();
+
     public function __construct($params)
     {
+        Donkey::instance()->addModule($this);
+
         $moduleDir = MODS_PATH . $params['name'] . SEP;
         if(!file_exists($moduleDir . 'controllers/' . ucfirst($params['controller'] . CONTROLLERSUFFIX) . EXT))
         {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Controller <b>'. ucfirst($params['controller'] . CONTROLLERSUFFIX) .'</b> du module <b>'. $params['name'] .'</b> inexistant !');
-            return;
+            throw new DkException('controller.inexistant', ucfirst($params['controller'] . CONTROLLERSUFFIX), $params['name']);
         } 
         
         if(file_exists($moduleDir . 'config/' . $this->_configName))
         {
-            $this->_config =& ConfigMgr::instance()->loadConfig('modules/' . $params['name'] . '/config/myConfig.php', ucfirst($params['name']) . 'ModuleConfig');   
+            $this->_moduleConfig = ConfigMgr::instance()->loadConfig('modules/' . $params['name'] . '/config/myConfig.php', ucfirst($params['name']) . 'ModuleConfig');   
         }
         else
         {
-            $this->_config =& ConfigMgr::instance()->loadConfig($this->initConfig(), ucfirst($this->_name) . 'ModuleConfig');   
+            $this->_moduleConfig = ConfigMgr::instance()->loadConfig($this->initConfig(), ucfirst($this->_name) . 'ModuleConfig');   
         }
+        parent::__construct($params['name']);
         
-        $this->_name = $params['name'];
-        $this->_loader =& Loader::instance();
-        $this->_controller =& $this->_loader->instanciate('modules/' . $params['name'] . '/controllers/' . ucfirst($params['controller'] . CONTROLLERSUFFIX), $this);
-        
-        Output::instance()->addParam('config', $this->config(TRUE));
+        $this->_loader = Loader::instance();
+        $controllerName = ucfirst($params['controller'] . CONTROLLERSUFFIX);
+        $this->_controller = new $controllerName($params['name']);
+        //$this->_controller->setModuleName($this->_moduleName);
+        OutputContent::assignGlobal('config', $this->config()->content());
     }
     
     public function run($action)
@@ -47,7 +47,7 @@ class Module
         if(method_exists($this->_controller, $action))
             call_user_func(array($this->_controller,$action));
         else
-            throw new Exception('<b>' . __CLASS__ . '</b> : Action <b> ' . $action . '</b> du controller <b> ' . get_class($this->_controller) .'</b> du module <b> ' . $this->_name . '</b> inexistante ! ');
+            throw new DkException('controller.action_inexistant', $action, get_class($this->_controller), $this->_name);
     }
     
     protected function initConfig()
@@ -57,28 +57,41 @@ class Module
          * celle ci doit retourner un array contenant toutes les clés ci-dessous.
          */
         return array(
-          'defaultTheme' => DEFAULTTHEME,
-          'sharedTheme'  => SHAREDTHEME
+          'defaultTheme' => DEFAULTTHEME
         );
-    }
-    
-    public function name()
-    {
-        return $this->_name;
-    }
-    
-    public function config($content = FALSE)
-    {
-        if(is_array($this->_config))
-            return $this->_config;
-        else if($content)
-            return $this->_config->content();
-        else
-            return $this->_config;
     }
     
     public function addModel($model)
     {
-        $this->_models[get_class($model)] =& $model;
+        $this->_models[get_class($model)] = $model;
     }
-}
+
+    public function addView($view, $key = 'content')
+    {
+        $this->_views[$key] = $view;
+    }
+
+    public function getViews()
+    {
+        return $this->_views;
+    }
+
+    /*
+     * Retourne le layout du module afin de remplir la principale variable de template
+     * Méthode uniquement appellée si c'est le module maître (= le premier appellé)
+     */
+    public function render()
+    {
+        return new OutputContent(Finder::layoutPath('template.php', $this->_moduleName, $this->getTheme()), $this->_views);  
+    }
+
+    /*
+     * Effectue différents traitements finaux afin d'intégrer les views chargées dans d'autres views/templates
+     * Méthode uniquement appellée si c'est un module secondaire (= tout autre que le premier appellé)
+     * A implémenter par les modules eux-ême
+     */
+    public function partialRender()
+    {
+
+    }    
+ }

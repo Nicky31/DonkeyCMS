@@ -3,6 +3,6 @@
  * Traductions anglaises du système
  */
 
-$trs['vue'] = 'This is the first view';
+$trs['vue'] = 'This is the english view';
 
 return $trs;

@@ -2,18 +2,33 @@
     
 class HomeController extends Controller
 {
-    public function __construct($Module)
+    public function __construct($moduleName)
     {
-        parent::__construct($Module);
-        $this->helper('urlManager');        
+        parent::__construct($moduleName);
+        $this->helper('urlManager');
+        //$model = $this->model('Test', 'dbStatic');       
     }
     
     public function index()
     {
-        if(($var = Input::get(0, 'GET')) === NULL)
+        $cache = new Cache('hometest');
+        if($cache->isNew())
         {
-            $var = 'param non renseigné';
+            if(($var = Input::get(0, 'GET')) === NULL)
+            {
+                $var = 'param non renseigné';
+            }
+
+            $cache -> save(30,
+                $this->view('test.php', array('var' => $var))
+                    -> at(OutputContent::POS_START)
+                    -> insertContent('<b>Ajout texte manuellement au debut de la vue</b>')
+            );
         }
-        $this->output()->view('test.php', array('var' => $var));
+        else
+        {
+            $this->addView($cache->getDatas());
+        }
     }
+
 }

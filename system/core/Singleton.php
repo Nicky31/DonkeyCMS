@@ -7,7 +7,7 @@
 
 abstract class Singleton 
 {    
-    public static function &instance($args = NULL)
+    public static function instance($args = NULL)
     { 
         static $instance;
         

@@ -16,10 +16,12 @@
         <div style="width:1100px; margin:auto;">
             <div id="menu">
                 <ul>
-                    <li><?php echo url('Theme custom', 'home/home/selectTheme','theme=custom');?></li>
-                    <li><?php echo url('Theme par defaut', 'home/home/selectTheme','theme=default');?></li>
+                    <li><?php echo url('English', 'home/home/selectLang','en');?></li>
+                    <li><?php echo url('French', 'home/home/selectLang','fr');?></li>
+                    <li><?php echo url('Theme custom', 'home/home/selectTheme','custom');?></li>
+                    <li><?php echo url('Theme par defaut', 'home/home/selectTheme','default');?></li>
                     <li><?php echo url('Controller Home');?></li>
-                    <li><?php echo url('Controller Test','home/test', array('arg1', 'arg2'));?></li>
+                    <li><?php echo url('Controller Test','home/test');?></li>
                 </ul>
             </div>
 

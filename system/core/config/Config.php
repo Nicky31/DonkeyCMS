@@ -1,4 +1,4 @@
- ,  <?php
+<?php
 
 /*
  * Classe gérant la gestion d'une config
@@ -15,9 +15,10 @@ class Config implements ArrayAccess
     public function __construct($params)
     {
         if(!is_array($params['path']))
-            $this->_content = Loader::instance()->getFile($params['path'], TRUE);
+            $this->_content = Loader::instance()->getFile($params['path'], TRUE, TRUE);
         else
             $this->_content = $params['path'];
+        
         $this->_name = $params['name'];
     }
     
@@ -26,7 +27,7 @@ class Config implements ArrayAccess
         if($this->itemExists($k))
             return $this->_content[$k];
         
-        throw new Exception('<b>'. __CLASS__ . '</b> : L\'item <b>'. $k .'</b> n\'existe pas dans la configuration <b>'. $this->_name .'</b> !');
+        throw new DkException('config.inexistant_item', $k, $this->_name);
     }
     
     public function toConstants()

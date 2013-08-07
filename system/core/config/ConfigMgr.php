@@ -13,18 +13,17 @@ class ConfigMgr extends Singleton
 
     protected function __construct()
     {
-        $this->_loader =& Loader::instance();
+        $this->_loader = Loader::instance();
     }
     
     /*
      * Note : Les configs.php doivent retourner l'array
      */
-    public function &loadConfig($path,$name)
+    public function loadConfig($path,$name)
     {
         if(isset($this->_configs[$name]))
         {
-            throw new Exception('<b>'. __CLASS__ .'</b> : La configuration <b>'. $name .'</b> est déjà chargée !');
-            return FALSE;
+            return $this->_configs[$name];
         }
         
         $params = array(
@@ -32,15 +31,15 @@ class ConfigMgr extends Singleton
             'name' => $name
         );
         
-        $this->_configs[$name] =& $this->_loader->instanciate('system/core/config/Config',$params);
+        $this->_configs[$name] = new Config($params);
         return $this->_configs[$name];
     }
     
-    public function &getConfig($name)
+    public function getConfig($name)
     {
         if(isset($this->_configs[$name]))
             return $this->_configs[$name];
         
-        throw new Exception('<b>'. __CLASS__ .'</b> : Configuration <b>'. $name .'</b> inexistante ou non chargée.');
+        throw new DkException('config.load_inexistant', $name);
     }   
 }

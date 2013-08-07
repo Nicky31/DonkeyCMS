@@ -1,3 +1,4 @@
-Ceci est le contenu de la view. <br />
-<?php echo $msg;
-?>
+<?php
+pTr('vue');
+
+echo img('test.jpg', 'home', 'default');

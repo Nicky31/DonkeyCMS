@@ -1,4 +1,4 @@
 Options FollowSymLinks
 RewriteEngine On
-RewriteCond $1 !^(index\.php|modules/)
+RewriteCond $1 !^(index\.php|modules/|bin/|tests/)
 RewriteRule ^(.*)$ index.php/$1 [L]

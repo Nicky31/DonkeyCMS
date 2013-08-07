@@ -20,7 +20,6 @@ abstract class Lang
         // Aucun chemin spécifié : on le détermine à partir du module à l'origine de cet appel
         if($dir == '')
         {
-            $callContext = debug_backtrace();
             list(, $callContext) = debug_backtrace();
             $dir = MODS_DIR . SEP . $callContext['object']->module()->name() . '/langs';
         }
@@ -52,12 +51,19 @@ abstract class Lang
         
         if(!$found)
         {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Fichier langue <b>'. $name . '</b> non trouvé dans <b>'. $dir .'</b>');
+            throw new DkException('lang.inexistant_file', $name, $dir);
         }
     }
     
     public static function tr($name, $args = array())
     {
+        // Contenus ne devant pas être traduits 
+        // (exceptions classe Lang disfonctionnant, tentative de traduction pourrait entrainer boucle infinie)
+        if(strrpos($name, ' ') !== FALSE)
+        {
+            return $name;
+        }
+
         $cookieLang = self::cookieLang();
         // Langue stockée en cookie & donc choisie par l'utilisateur ?
         if(isset(self::$_translations[$cookieLang][$name]))
@@ -76,13 +82,14 @@ abstract class Lang
         }
         else
         {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Demande de la traduction <b>'. $name .'</b> échouée car inexistante ou non chargée.');
+            throw new DkException('lang.inexistant_tr', $name);
         }
     }
     
     public static function cookieLang()
     {
-        return isset($_COOKIE[DATASDONKEY]['defaultLang']) ? $_COOKIE[DATASDONKEY]['defaultLang'] : '';
+        return (isset($_COOKIE[DATASDONKEY]['defaultLang']) && strlen($_COOKIE[DATASDONKEY]['defaultLang']) <= 2) ? 
+            $_COOKIE[DATASDONKEY]['defaultLang'] : '';
     }
     
     public static function userLang()

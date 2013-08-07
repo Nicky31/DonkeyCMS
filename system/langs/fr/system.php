@@ -3,7 +3,6 @@
  * Traductions françaises du système
  */
 
-$trs['vue'] = 'Ceci est la premiere vue';
-$trs['welcome'] = 'DonkeyCMS te souhaite la bienvenue';
+$trs['vue'] = 'Ceci est la vue en français';
 
 return $trs;

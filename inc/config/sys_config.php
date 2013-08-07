@@ -11,8 +11,6 @@ return array(
     'defaultController' => 'home',
     // Méthode par défaut si non indiquée dans la route. Utilisé pour tous les modules
     'defaultAction' => 'index',
-    // Nom du $_GET indiquant la route
-    'routeGet' => 'p',
     // Suffixe des des fichiers+Classes Modules
     'moduleSuffix' => 'Module',
     // Suffixe des fichiers+Classes Controllers
@@ -21,10 +19,10 @@ return array(
     'modelSuffix' => 'Model',
     // Thème par défaut de tous les modules. Modifiable dans la config des modules sur le même index
     'defaultTheme' => 'default',
-    // Nom du thème partagé par les autres thèmes de chaque module. Modifiable dans la config des modules sur le même index
-    'sharedTheme' => 'shared',
     // Nom des sessions & cookies relatifs aux données internes de DonkeyCMS
     'datasDonkey' => 'DonkeyDatas',
     // Extension ajoutée à la fin des urls : Facultatif, uniquement à but esthétique 
-    'uriExt'      => '.html'
+    'uriExt'      => '.html',
+    // Compression de la page envoyée au navigateur ? Unique compression disponible : gzip. Accélère le chargement de la page
+    'compressOutput' => 'gzip'
 );

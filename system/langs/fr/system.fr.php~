@@ -1,5 +1,0 @@
-<?php
-
-$trs['vue'] = 'Ceci est la premiere vue';
-
-return $trs;

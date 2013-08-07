@@ -6,13 +6,15 @@ class ConnectionsMgr extends Singleton
     private $_dbsConfigs  = NULL;
     // Tableau des objets PDO représentant les connexions
     private $_connections = array();
-    
+    // Chemin vers la configuration des db's
+    const   CONFIG_PATH   = 'inc/config/databases_config';
+
     protected function __construct($configPath)
     {
-        $this->_dbsConfigs =& ConfigMgr::instance()->loadConfig($configPath, 'dbsConfig');
+        $this->_dbsConfigs = ConfigMgr::instance()->loadConfig($configPath, 'dbsConfig');
     }
     
-    public function &getConnection($name)
+    public function getConnection($name)
     {
         if(isset($this->_connections[$name]))
             return $this->_connections[$name];
@@ -20,16 +22,15 @@ class ConnectionsMgr extends Singleton
             return $this->initializeConnection ($name);
     }
     
-    private function &initializeConnection($name)
+    private function initializeConnection($name)
     {
         if(!($config = $this->_dbsConfigs[$name]))
         {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Tentative d\'initialisation d\'une connexion sur la db <b>' . $name .'</b> échouée car index inexistant dans la configuration.');
-            return FALSE;
+            throw new DkException('database.inexistant_configuration', $name);
         }
         
         $db = new PDO('mysql:host=' . $config['host'] . ';dbname=' . $config['name'] , $config['user'] , $config['password'], $config['options']);
-        $this->_connections[$name] =& $db;
+        $this->_connections[$name] = $db;
         
         return $db;
     }

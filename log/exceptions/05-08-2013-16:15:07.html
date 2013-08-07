@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8" />
+        <title>Exception rencontrée</title>
+    </head>
+
+    <body>
+        <fieldset style="background-color: #F6DDDD; border: 1px solid #FD1717; color: #8C2E0B; padding: 10px;">
+            <legend><h4>Exception survenue</h4></legend>
+
+            <table style="width:100%; border-collapse: collapse;">
+                <tr style="border: 1px solid #FD1717;">
+                    <td style="border: 1px solid black; background-color: #E0C9C9;"><b>Message : </b></td>
+                    <td style="text-align:center;">
+                        Fichier template <b>test.php</b> inexistant !                    </td>
+                </tr>
+                
+                <tr style="border: 1px solid #FD1717;">
+                    <td style="border: 1px solid black; background-color: #E0C9C9;"><b>Appel : </b></td>
+                    <td style="text-align:center;">
+                        <ol style="list-style-type:arabic-numbers;">
+<li> <pre>Ligne <b>81</b> du fichier <b>/opt/lampp/htdocs/DonkeyCMS/system/core/output/OutputContent.php</b></pre>
+<li> <pre>Ligne <b>27</b> du fichier <b>/opt/lampp/htdocs/DonkeyCMS/system/core/output/OutputContent.php</b> : appel de la <b> méthode OutputContent::loadTemplate(test, Array)</b></pre>
+<li> <pre>Ligne <b>21</b> du fichier <b>/opt/lampp/htdocs/DonkeyCMS/modules/home/controllers/HomeController.php</b> : appel de la <b> méthode OutputContent::__construct(test, Array)</b></pre>
+<li> <pre><b>PHP</b> : appel de la <b> méthode HomeController::index</b></pre>
+<li> <pre>Ligne <b>46</b> du fichier <b>/opt/lampp/htdocs/DonkeyCMS/system/core/module/Module.php</b> : appel de la <b> fonction call_user_func(Array)</b></pre>
+<li> <pre>Ligne <b>87</b> du fichier <b>/opt/lampp/htdocs/DonkeyCMS/system/core/Donkey.php</b> : appel de la <b> méthode Module::run(index)</b></pre>
+<li> <pre>Ligne <b>52</b> du fichier <b>/opt/lampp/htdocs/DonkeyCMS/system/core/Donkey.php</b> : appel de la <b> méthode Donkey::runModule(home, home, index)</b></pre>
+<li> <pre>Ligne <b>94</b> du fichier <b>/opt/lampp/htdocs/DonkeyCMS/index.php</b> : appel de la <b> méthode Donkey::run</b></pre>
+</ol>                    </td>
+                </tr>
+            </table>
+            
+        </fieldset>
+    </body>
+</html>
+

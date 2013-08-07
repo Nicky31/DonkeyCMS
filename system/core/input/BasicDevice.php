@@ -60,11 +60,13 @@ abstract class BasicDevice
                         return FALSE;
                 break;
                 case 'bool' :
-                    if($data[1] != TRUE && $data[1] != TRUE)
+                    if(!in_array($data[1], array('1', 'true', '0', 'false', 'enable', 'disable')))
                         return FALSE;
                 break;
+                case 'all' : 
+                break;
                 default:
-                    throw new Exception('Règles de donnée entrante contient un <b>varType inexistant</b> : <b>' . $varType .'</b>');
+                    throw new DkException('input.basicDevice.bad_varType', $varType);
                 break;
             endswitch;
         }

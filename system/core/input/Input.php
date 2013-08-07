@@ -36,11 +36,11 @@ abstract class Input
     {
         if(isset(self::$_devices[$deviceName]))
         {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Enregistrement d\'un support <b>'. $deviceName .'</b> déjà enregistré !');
-            return;
+            return TRUE;
         }
         
         self::$_devices[$deviceName] = $c;
+        return TRUE;
     }
     
     /*
@@ -50,8 +50,7 @@ abstract class Input
     {
         if(!isset(self::$_devices[$device]))
         {
-            throw new Exception('<b>'. __CLASS__ .'</b> : Support <b>'. $device .'</b> inexistant ou non-enregistré.');
-            return;
+            throw new DkException('input.inexistant_device', $device);
         }
         
         $device = self::$_devices[$device];       

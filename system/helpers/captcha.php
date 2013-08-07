@@ -3,7 +3,7 @@
  * Fonctions de génération d'un captcha
  * @author http://www.petit-kiwi.com/php-creation-captcha-anti-spam
  */
-
+//TODO: adapter chemins
 define('PATH_FONTS', ASSETS_PATH . '/shared/fonts');
 define('NB_LINES', 10); // Nombre de lignes barrant le captcha
 
@@ -12,7 +12,7 @@ function getCode($length)
     $chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'; 
     $code = '';
     
-    for ($i=0; $i<$length; $i++) 
+    for ($i=0; $i<$length; ++$i) 
         $code .= $chars{ mt_rand( 0, strlen($chars) - 1 ) };
     
     return $code; 
@@ -52,7 +52,7 @@ function getCaptcha($sessionName = 'captcha')
     imagettftext($image, 28, 25, 100, 37, random($colors),random($fonts), $char4);
     imagettftext($image, 28, -15, 120, 37, random($colors),random($fonts), $char5);
 
-    for($i = 0; $i < NB_LINES; $i++)
+    for($i = 0; $i < NB_LINES; ++$i)
     {
         $x1 = mt_rand(0, imagesx($image));
         $y1 = mt_rand(0, imagesy($image));

@@ -48,15 +48,18 @@ define('SEP',        DIRECTORY_SEPARATOR);
  */
 define('SYS_DIR',    'system');
 define('INC_DIR',    'inc');
+define('CACHE_DIR',  'cache');
+define('LOG_DIR',    'log');
 define('MODS_DIR',   'modules');
-define('SHARED_DIR', 'shared');
 /*
  * Arborescence : chemins principaux
  */
 define('BASE_PATH',  __DIR__);
-define('SYS_PATH',   BASE_PATH . SEP . SYS_DIR  . SEP);
-define('INC_PATH',   BASE_PATH . SEP . INC_DIR  . SEP);
-define('MODS_PATH',  BASE_PATH . SEP . MODS_DIR . SEP);
+define('SYS_PATH',   BASE_PATH . SEP . SYS_DIR   . SEP);
+define('INC_PATH',   BASE_PATH . SEP . INC_DIR   . SEP);
+define('CACHE_PATH', BASE_PATH . SEP . CACHE_DIR . SEP);
+define('LOG_PATH',   BASE_PATH . SEP . LOG_DIR   . SEP);
+define('MODS_PATH',  BASE_PATH . SEP . MODS_DIR  . SEP);
 /*
  * Version du CMS
  */
@@ -81,12 +84,16 @@ else
     
 session_start(); 
 
-require SYS_PATH . 'core/Singleton' . EXT;
-require SYS_PATH . 'core/Loader'    . EXT;
+require SYS_PATH . 'core/Singleton' 		. EXT;
+require SYS_PATH . 'core/Loader'    		. EXT;
+require SYS_PATH . 'libraries/ClassIndexer' . EXT;
 
-$Loader =& Loader::instance();
+ClassIndexer::addDirsForbidden(array( LOG_DIR, 'langs', 'themes', 'nbproject', 'simpletest' ));
+ClassIndexer::enableCache(! DEBUG_MODE, CACHE_PATH . 'ClassIndexer');
+$classes = ClassIndexer::processDir(BASE_PATH);
+$Loader = Loader::instance($classes);
 
-$Donkey =& $Loader->instanciate('system/core/Donkey', $Loader);
+$Donkey = Donkey::instance($Loader);
 $Donkey->run();
 
 $time_end = microtime(true);
