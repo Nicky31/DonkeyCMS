@@ -7,34 +7,34 @@
 
 abstract class ModuleComponent
 {
-	// Nom du module
-	protected $_moduleName;
-	// Objet module
-	protected $_module 	     = NULL;
-	// Config du module
-	protected $_moduleConfig = NULL;
+    // Nom du module
+    protected $_moduleName;
+    // Objet module
+    protected $_module       = NULL;
+    // Config du module
+    protected $_moduleConfig = NULL;
 
-	public function __construct($moduleName)
-	{
-		$this->setModuleName($moduleName);
-	}
+    public function __construct($moduleName)
+    {
+        $this->setModuleName($moduleName);
+    }
 
-	public function setModuleName($moduleName)
-	{
-		$this->_moduleName = $moduleName;
-		$this->initComponent();
-	}
+    public function setModuleName($moduleName)
+    {
+        $this->_moduleName = $moduleName;
+        $this->initComponent();
+    }
 
-	public function initComponent()
-	{
-		$this->_moduleConfig = Donkey::instance()->module($this->_moduleName)->config();
-		$this->_module = Donkey::instance()->module($this->_moduleName);
-	}
+    public function initComponent()
+    {
+        $this->_moduleConfig = Donkey::instance()->module($this->_moduleName)->config();
+        $this->_module = Donkey::instance()->module($this->_moduleName);
+    }
 
-	public function module()
-	{
-		return $this->_module;
-	}
+    public function module()
+    {
+        return $this->_module;
+    }
 
     public function name()
     {
@@ -46,20 +46,20 @@ abstract class ModuleComponent
         return $this->_moduleConfig;
     }
 
-	public function getConfig()
-	{
-		return $this->_moduleConfig;
-	}
+    public function getConfig()
+    {
+        return $this->_moduleConfig;
+    }
 
-	public function selectTheme()
+    public function selectTheme()
     {
         call_user_func_array(array($this, DEFAULTACTION), array());
         echo redirect();
 
         if(($theme = Input::get(0, 'GET')) === NULL)
         {
-			return;
-		}
+            return;
+        }
         if(!is_dir(MODS_PATH . $this->_moduleName .'/themes/' . $theme))
         {
             return;
@@ -75,7 +75,7 @@ abstract class ModuleComponent
 
         if(($lang = Input::get(0, 'GET')) === NULL ||
             $lang != NULL && strlen($lang) > 2)
-			return;
+            return;
         
         setcookie(DATASDONKEY .'[defaultLang]', $lang, time() + 365*24*3600, '/', null, false, true);
     }

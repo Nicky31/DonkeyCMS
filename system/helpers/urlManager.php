@@ -53,7 +53,7 @@ function refresh($keepVars = FALSE)
 }
 
 function siteUrl($module = array(), $gets = array())
-{		
+{       
     if(!is_array($module) && !empty($module))
     {
         $moduleExplode = explode('/', $module);
@@ -80,7 +80,7 @@ function siteUrl($module = array(), $gets = array())
 }
 
 function url($text, $module = array(), $gets = array())
-{	
+{   
     echo '<a href="' . siteUrl($module, $gets) . '">' . htmlentities($text) . '</a>';
     return '';
 }
