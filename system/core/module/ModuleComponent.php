@@ -56,7 +56,7 @@ abstract class ModuleComponent
         call_user_func_array(array($this, DEFAULTACTION), array());
         echo redirect();
 
-        if(($theme = Input::get(0, 'GET')) === NULL)
+        if(!$theme = Input::get(0, 'GET', array( 'pattern'   => '#^[a-z0-9/_-]{1,16}$#i' )))
         {
             return;
         }
@@ -73,9 +73,10 @@ abstract class ModuleComponent
         call_user_func_array(array($this, DEFAULTACTION), array());
         echo redirect(); 
 
-        if(($lang = Input::get(0, 'GET')) === NULL ||
-            $lang != NULL && strlen($lang) > 2)
+        if(!$lang = Input::get(0, 'GET', array( 'pattern'   => '#^[a-z]{2,3}$#i' )))
+        {
             return;
+        }
         
         setcookie(DATASDONKEY .'[defaultLang]', $lang, time() + 365*24*3600, '/', null, false, true);
     }
@@ -87,9 +88,12 @@ abstract class ModuleComponent
         $curTheme = $this->_moduleConfig->item('defaultTheme');
         if(isset($_COOKIE[DATASDONKEY]['modules'][$this->_moduleName]['defaultTheme']))
         {
-            $curTheme = $_COOKIE[DATASDONKEY]['modules'][$this->_moduleName]['defaultTheme'];
+            $dirTheme = realpath(MODS_PATH . SEP . $this->_moduleName . '/themes/' . $_COOKIE[DATASDONKEY]['modules'][$this->_moduleName]['defaultTheme']);
+            if(is_dir($dirTheme) && basename(dirname($dirTheme)) == 'themes')   
+            {
+                $curTheme = $_COOKIE[DATASDONKEY]['modules'][$this->_moduleName]['defaultTheme'];
+            }
         }
-        
         
         return $curTheme;
     }

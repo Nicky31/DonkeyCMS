@@ -14,6 +14,9 @@ return array(
     ),
     'POST' => array(
         'pattern' => '#^.+$#i'
+    ),
+    'COOKIE' => array(
+        'pattern' => '#^[a-z0-9/_-]{1,32}$#i'
     )
     
 );

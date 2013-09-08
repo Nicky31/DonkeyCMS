@@ -88,7 +88,7 @@ abstract class Lang
     
     public static function cookieLang()
     {
-        return (isset($_COOKIE[DATASDONKEY]['defaultLang']) && strlen($_COOKIE[DATASDONKEY]['defaultLang']) <= 2) ? 
+        return (isset($_COOKIE[DATASDONKEY]['defaultLang']) && strlen($_COOKIE[DATASDONKEY]['defaultLang']) <= 3) ? 
             $_COOKIE[DATASDONKEY]['defaultLang'] : '';
     }
     

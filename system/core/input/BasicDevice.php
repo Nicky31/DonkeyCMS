@@ -14,6 +14,10 @@ Input::registerInputDevice('POST', function($k, $options = array())
 {
     return BasicDevice::processPostRequest($k, $options);
 });
+Input::registerInputDevice('COOKIE', function($k, $options = array())
+{
+    return BasicDevice::processCookieRequest($k, $options);
+});
 
 abstract class BasicDevice
 {
@@ -28,6 +32,13 @@ abstract class BasicDevice
     {
         $val = self::getData($k, $_POST, $options);
         return ($val != NULL) ? self::secureData(array($k, $val), 'POST', $options) : NULL;
+    }
+
+
+    public static function processCookieRequest($k, $options = array())
+    {
+        $val = self::getData($k, $_COOKIE, $options);
+        return ($val != NULL) ? self::secureData(array($k, $val), 'COOKIE', $options) : NULL;
     }
     
     public static function getData($k, $array, $options = array())
