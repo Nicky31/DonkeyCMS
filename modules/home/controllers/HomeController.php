@@ -2,11 +2,11 @@
     
 class HomeController extends Controller
 {
-    public function __construct($moduleName)
+    public function __construct($module)
     {
-        parent::__construct($moduleName);
+        parent::__construct($module);
         $this->helper('urlManager');
-        //$model = $this->model('Test', 'dbStatic');       
+        //$model = $this->model('Test', 'myDb');       
     }
     
     public function index()
@@ -19,7 +19,7 @@ class HomeController extends Controller
                 $var = 'param non renseigné';
             }
 
-            $cache -> save(30,
+            $cache -> save(0,
                 $this->view('test.php', array('var' => $var))
                     -> at(OutputContent::POS_START)
                     -> insertContent('<b>Ajout texte manuellement au debut de la vue</b>')

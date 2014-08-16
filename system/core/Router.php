@@ -19,8 +19,7 @@ abstract class Router
     private static $_curRouteParams = array();
     
     /*
-     * Retourne un tableau de données extraites de l'uri suivant un pattern
-     * Uri Pattern :
+     * Retourne un tableau de données extraites de l'uri suivant le pattern suivant :
      * yourwebsite.com/Module/Controller/Action-arg1-arg2.html
      */
     public static function getRouteArray($strRoute)

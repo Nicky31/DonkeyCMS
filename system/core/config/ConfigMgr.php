@@ -6,15 +6,8 @@
 
 class ConfigMgr extends Singleton
 {
-    // Instance du loader
-    private        $_loader   = NULL;
     // Tableau des configs instanciées
     private        $_configs  = array();
-
-    protected function __construct()
-    {
-        $this->_loader = Loader::instance();
-    }
     
     /*
      * Note : Les configs.php doivent retourner l'array

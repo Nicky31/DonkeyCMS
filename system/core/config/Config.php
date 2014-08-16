@@ -34,7 +34,7 @@ class Config implements ArrayAccess
     {
         foreach($this->_content as $k => $v)
         {
-            if(is_array($v))
+            if(is_array($v)) // Ne define pas les sous valeurs
             {
                 continue;
             }
@@ -57,7 +57,7 @@ class Config implements ArrayAccess
     {
         if($this->itemExists($k))
         {
-            unset($this->_content[k]);
+            unset($this->_content[$k]);
             return TRUE;
         }
         return FALSE;

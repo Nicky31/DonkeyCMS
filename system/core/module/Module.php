@@ -4,46 +4,48 @@
  * Classe contenant un module respectant le pattern MVC
  */
 
-class Module extends ModuleComponent
+class Module
 {
+    // Nom du module
+    protected $_moduleName   = NULL;
     // Classe controller chargée
-    protected $_controller = NULL;
+    protected $_controller   = NULL;
     // Tableau des différents modèles chargés
-    protected $_models     = array();
-    // Nom de la configuration principale du module
-    protected $_configName = 'config.php';
+    protected $_models       = array();
+    // Configuration principale du module
+    protected $_moduleConfig = NULL;
     // Views chargées par le module et extraites lors de l'affichage du layout
-    protected $_views      = array();
+    protected $_views        = array();
 
-    public function __construct($params)
+    public function __construct($moduleName)
     {
-        Donkey::instance()->addModule($this);
+        $this->_moduleName = $moduleName;
 
-        $moduleDir = MODS_PATH . $params['name'] . SEP;
-        if(!file_exists($moduleDir . 'controllers/' . ucfirst($params['controller'] . CONTROLLERSUFFIX) . EXT))
+        if(file_exists(MODS_PATH . $moduleName . '/config/config.php')) // Le module a-t-il sa propre config ?
         {
-            throw new DkException('controller.inexistant', ucfirst($params['controller'] . CONTROLLERSUFFIX), $params['name']);
-        } 
-        
-        if(file_exists($moduleDir . 'config/' . $this->_configName))
-        {
-            $this->_moduleConfig = ConfigMgr::instance()->loadConfig('modules/' . $params['name'] . '/config/myConfig.php', ucfirst($params['name']) . 'ModuleConfig');   
+            $this->_moduleConfig = ConfigMgr::instance()->loadConfig('modules/' . $moduleName . '/config/config.php', ucfirst($moduleName) . 'ModuleConfig');   
         }
         else
         {
-            $this->_moduleConfig = ConfigMgr::instance()->loadConfig($this->initConfig(), ucfirst($this->_name) . 'ModuleConfig');   
+            $this->_moduleConfig = ConfigMgr::instance()->loadConfig($this->initConfig(), ucfirst($moduleName) . 'ModuleConfig');   
         }
-        parent::__construct($params['name']);
         
-        $this->_loader = Loader::instance();
-        $controllerName = ucfirst($params['controller'] . CONTROLLERSUFFIX);
-        $this->_controller = new $controllerName($params['name']);
-        //$this->_controller->setModuleName($this->_moduleName);
         OutputContent::assignGlobal('config', $this->config()->content());
     }
     
-    public function run($action)
+    public function run($controller, $action)
     {
+        if($this->_controller == NULL)
+        {
+            if(!file_exists(MODS_PATH . $this->_moduleName . '/controllers/' . ucfirst($controller . CONTROLLERSUFFIX) . EXT))
+            {
+                throw new DkException('controller.inexistant', ucfirst($controller . CONTROLLERSUFFIX), $this->_moduleName);
+            } 
+
+            $controllerName = ucfirst($controller . CONTROLLERSUFFIX);
+            $this->_controller = new $controllerName($this);
+        }
+
         if(method_exists($this->_controller, $action))
             call_user_func(array($this->_controller,$action));
         else
@@ -61,6 +63,16 @@ class Module extends ModuleComponent
         );
     }
     
+    public function name()
+    {
+        return $this->_moduleName;
+    }
+
+    public function config()
+    {
+        return $this->_moduleConfig;
+    }
+
     public function addModel($model)
     {
         $this->_models[get_class($model)] = $model;
@@ -74,6 +86,29 @@ class Module extends ModuleComponent
     public function getViews()
     {
         return $this->_views;
+    }
+
+    public function getTheme()
+    {
+        $curTheme = $this->_moduleConfig->item('defaultTheme');
+        if(isset($_COOKIE[DATASDONKEY]['modules'][$this->_moduleName]['defaultTheme']))
+        {
+            $dirTheme = realpath(MODS_PATH . SEP . $this->_moduleName . '/themes/' . $_COOKIE[DATASDONKEY]['modules'][$this->_moduleName]['defaultTheme']);
+            if(is_dir($dirTheme) && basename(dirname($dirTheme)) == 'themes')   
+            {
+                $curTheme = $_COOKIE[DATASDONKEY]['modules'][$this->_moduleName]['defaultTheme'];
+            }
+        }
+        
+        return $curTheme;
+    }
+
+    /*
+     * Ajoute des paramètres de connexions pour une nouvelle base de donnée à la dbsConfig
+     */
+    public function registerDatabase($dbName, $params)
+    {
+        ConfigMgr::instance()->getConfig('dbsConfig')->rewriteItem($dbName, $params);
     }
 
     /*
@@ -90,7 +125,7 @@ class Module extends ModuleComponent
      * Méthode uniquement appellée si c'est un module secondaire (= tout autre que le premier appellé)
      * A implémenter par les modules eux-ême
      */
-    public function partialRender()
+    public function partialRender(OutputContent $mainOutput)
     {
 
     }    

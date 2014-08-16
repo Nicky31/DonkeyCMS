@@ -17,9 +17,9 @@ function parsePath($path)
  */
 function appendExt($path, $ext = EXT)
 {
-    if(strrpos(basename($path), EXT) === FALSE)
+    if(strrpos(basename($path), $ext) === FALSE)
     {
-        return $path . EXT;
+        return $path . $ext;
     }
     
     return $path;

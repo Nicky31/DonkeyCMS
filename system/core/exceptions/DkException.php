@@ -8,8 +8,9 @@ class DkException extends Exception
 {
     public function __construct($content, $args = array())
     {
-        ExceptionManager::init();
-        
+    	// Exception en boucle lors de tr() si on ne charge pas les traductions d'exception dans le constructeur :
+    	ExceptionManager::init();
+
         if(func_num_args() > 2)
         {
             $args = func_get_args();

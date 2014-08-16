@@ -20,7 +20,7 @@ abstract class ExceptionManager
         Lang::loadTranslations('exceptions', 'system/langs');
 
         // Load observers
-        self::attach(new FileWriter(LOG_PATH . self::LOGS_DIR));
+        self::attach(new FileWriter(LOG_PATH . self::LOGS_DIR . SEP));
     }
     
     public static function enable($enable = TRUE)
@@ -53,14 +53,15 @@ abstract class ExceptionManager
 
     public static function handleException(Exception $e)
     {     
-        // Traitement de l'exception si le manager est actif
+        // Traitement de l'exception si le manager est actif pour ne pas réveler certaines données en production
         if(self::$_enable)
         {
             self::printException($e);
             
             if(AntiFlood::isFlood() === FALSE)
             {
-                self::notify();
+                // Ne log l'exception que s'il ne s'agit pas d'un flood destiné a saturer le serveur :
+                self::notify(); 
             }
         }
         
@@ -124,6 +125,9 @@ abstract class ExceptionManager
     }
 }
 
+/*
+ * Observer permettant la sauvegarde des exceptions dans des fichiers htmls
+ */
 class FileWriter
 {
     private $_dirPath = NULL;
@@ -133,6 +137,10 @@ class FileWriter
         $this->_dirPath = $fullPath;
     }
     
+    /*
+     * Fonction appellée dès lors de la rencontre d'une exception
+     * $subjectClassName = Nom de la classe ExceptionManager > Simple soucis de souplesse
+     */
     public function update($subjectClassName)
     {
         $this->write($subjectClassName::getException(), $this->_dirPath.date('d-m-Y-H:i:s').'.html');
@@ -168,7 +176,7 @@ __halt_compiler();
                 
                 <tr style="border: 1px solid #FD1717;">
                     <td style="border: 1px solid black; background-color: #E0C9C9;"><b>Appel : </b></td>
-                    <td style="text-align:center;">
+                    <td style="">
                         <?php echo $trace; ?>
                     </td>
                 </tr>

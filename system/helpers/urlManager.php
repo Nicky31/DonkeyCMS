@@ -41,7 +41,7 @@ function redirect($url = '', $time = 0)
     return '<meta http-equiv="refresh" content="'. $time .';URL='. $url .'">';
 }
 
-function refresh($keepVars = FALSE)
+function refresh()
 {
     $route = array(
         'module'     => MAIN_MODULE,
@@ -81,6 +81,5 @@ function siteUrl($module = array(), $gets = array())
 
 function url($text, $module = array(), $gets = array())
 {   
-    echo '<a href="' . siteUrl($module, $gets) . '">' . htmlentities($text) . '</a>';
-    return '';
+    return '<a href="' . siteUrl($module, $gets) . '">' . htmlentities($text) . '</a>';
 }

@@ -6,12 +6,10 @@ class ConnectionsMgr extends Singleton
     private $_dbsConfigs  = NULL;
     // Tableau des objets PDO représentant les connexions
     private $_connections = array();
-    // Chemin vers la configuration des db's
-    const   CONFIG_PATH   = 'inc/config/databases_config';
 
-    protected function __construct($configPath)
+    protected function __construct()
     {
-        $this->_dbsConfigs = ConfigMgr::instance()->loadConfig($configPath, 'dbsConfig');
+        $this->_dbsConfigs = ConfigMgr::instance()->getConfig('dbsConfig');
     }
     
     public function getConnection($name)

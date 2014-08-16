@@ -1,13 +1,11 @@
 <?php
-/*
- * Configurations des connexions SQLS
- */
- 
+
 return array(
-    // Nom de la connexion utilisé en interne
-    'donkeyDb' => array(
+    'defaultTheme' => 'default',
+
+    'myDb' => array(
         // Nom de la db sélectionnée par défaut
-        'name'     => 'donkey_db',
+        'name'     => 'blablah',
         'host'     => 'localhost',
         'port'     => 3306,
         'user'     => 'root',

@@ -27,8 +27,7 @@
     {
         if(file_exists($filePath = BASE_PATH . SEP . self::CACHE_DIR . SEP . appendExt($name)))
         {
-            unlink($filePath);
-            return TRUE;
+            return unlink($filePath);
         }
 
         return FALSE;

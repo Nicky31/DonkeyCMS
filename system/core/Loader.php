@@ -9,6 +9,7 @@ class Loader extends Singleton
     /*
      * Classes existantes au sein du projet (& ses sous dossiers)
      * array[className] = 'filePath';
+     * Defini par system/libraries/ClassIndexer.php dans l'index
      */
     private $_classes  = array();
 
@@ -21,7 +22,6 @@ class Loader extends Singleton
         $this->_classes = $classes;
         spl_autoload_register(array($this, 'loadClass'));
         set_exception_handler(array($this, 'loadExceptionMgr'));
-        self::autoloads();
     }
 
     /*
@@ -32,7 +32,7 @@ class Loader extends Singleton
         ExceptionManager::handleException($e);
     }
 
-    public static function autoloads()
+    public function autoloads()
     {   
         require BASE_PATH . SEP . SYS_DIR . SEP . 'core/SystemHelper.php';
         // Traductions de base du système
@@ -50,6 +50,11 @@ class Loader extends Singleton
             'css'    => array('modules/%s/themes/shared/css', 'modules/%s/themes/%s/css'),
             'js'     => array('modules/%s/themes/shared/js', 'modules/%s/themes/%s/js')
         ));
+
+        // Configurations système
+        ConfigMgr::instance()->loadConfig('inc/config/sys_config', 'sysConfig');
+        ConfigMgr::instance()->loadConfig('inc/config/databases_config', 'dbsConfig');
+        ConfigMgr::instance()->loadConfig('inc/config/autoloads_config','autoloadsConfig');
     }
 
     public function getFile($filePath, $returnContent = FALSE, $force = FALSE)

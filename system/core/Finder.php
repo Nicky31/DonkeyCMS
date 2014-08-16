@@ -60,17 +60,17 @@ defined('SEP') || define('SEP', DIRECTORY_SEPARATOR);
     {
         $typePath = NULL;
         // Type de chemin demandé : absolu / url ? 
-        if(substr($name, -3) == 'Url')
+        if(substr($name, -3) == 'Url') // On veut l'url du fichier
         {
             $typePath = self::URL;
             $name = substr($name, 0, strlen($name) - 3);
         }
-        else if(substr($name, -4) == 'Path')
+        else if(substr($name, -4) == 'Path') // On veut le chemin absolu du fichier
         {
             $typePath = self::PATH;
             $name = substr($name, 0, strlen($name) - 4);
         }
-        else
+        else // On veut les 2 dans un tableau
         {
             $typePath = self::BOTH;
         }
@@ -79,7 +79,7 @@ defined('SEP') || define('SEP', DIRECTORY_SEPARATOR);
         {
             $file = array_shift($args);
             foreach(self::$_fileTypes[$name] as $curPath)
-            { // Chemin courant
+            { // Chemin courant contenant le type de fichier demandé
                 $nbVars = substr_count($curPath, '%s');
                 if($nbVars > count($args))
                     continue;
@@ -146,9 +146,15 @@ defined('SEP') || define('SEP', DIRECTORY_SEPARATOR);
 
         foreach(self::$_fileTypes as $fileType => $v)
         {
-            if(!function_exists($fileType.'Path'))
+            /*
+             * Génère la fonction de recherche de chemin absolu du type de fichier courant
+             */
+            if(!function_exists($fileType.'Path')) 
                 eval($genCode($fileType, 'Path'));
 
+            /*
+             * Génère la fonction de recherche d'url du type de fichier courant
+             */
             if(!function_exists($fileType.'Url'))
                 eval($genCode($fileType, 'Url'));
 

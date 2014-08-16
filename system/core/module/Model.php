@@ -4,14 +4,14 @@
  * Classe mère de tous les models
  */
 
-abstract class Model extends ModuleComponent
+abstract class Model
 {
     // Objet (PDO) représentant la connexion
     protected $_db = NULL;
     
     public function __construct($dbName)
     {
-        $this->_db = ConnectionsMgr::instance(ConnectionsMgr::CONFIG_PATH) -> getConnection($dbName);
+        $this->_db = ConnectionsMgr::instance()->getConnection($dbName);
     }
     
     public function switchDatabase($dbName)

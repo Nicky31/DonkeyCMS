@@ -6,8 +6,6 @@
 
 class Donkey extends Singleton
 {
-    // Instance du loader
-    private $_loader    = NULL;
     // Classe config du système
     private $_sysConfig = NULL;
     // Tableau des modules chargés
@@ -15,13 +13,10 @@ class Donkey extends Singleton
     
     protected function __construct($Loader)
     {
-        $this->_loader = $Loader;
-        
-        // Config Manager
-        $ConfigMgr = ConfigMgr::instance();
+        $Loader->autoloads();
         
         // Chargement configuration système
-        $this->_sysConfig = $ConfigMgr->loadConfig('inc/config/sys_config', 'sysConfig');
+        $this->_sysConfig = ConfigMgr::instance()->getConfig('sysConfig');
         $this->_sysConfig->toConstants();
         $this->autoloads();
         
@@ -54,7 +49,7 @@ class Donkey extends Singleton
     {
         $OutputContent = array_shift($this->_modules) -> render();
         foreach($this->_modules as $module)
-            $module->partialRender();
+            $module->partialRender($OutputContent);
 
         echo $OutputContent;
     }
@@ -66,30 +61,19 @@ class Donkey extends Singleton
         {
             throw new DkException('module.inexistant', $module);
         }
-        
-        $params = array(
-            'name' => $module,
-            'controller' => $controller
-        );
-        $moduleObj = NULL;
-        
-        // Une surcharge de la classe module existe
-        if(file_exists($moduleDir . ucfirst($module . MODULESUFFIX . EXT)))        
-        {
-            $className = ucfirst($module . MODULESUFFIX);
-            $moduleObj = new $className($params);
-        }
-        else
-        { 
-            $moduleObj = new Module($params);
-        }
-        
+                
+        // On détermine si une surcharge de la classe module est disponible
+        $className = file_exists($moduleDir . ucfirst($module . MODULESUFFIX . EXT))
+                        ? ucfirst($module . MODULESUFFIX) : 'Module';
+        $moduleObj = new $className($module);
+        $this->addModule($moduleObj);
+
         if(!is_subclass_of($moduleObj, 'Module'))
         {
             throw new DkException('class.should_unherit', 'Module ' . ucfirst($module . MODULESUFFIX), 'Module');
         }
         
-        $moduleObj->run($action);
+        $moduleObj->run($controller, $action);
     }
     
     public function addModule($module)
@@ -111,7 +95,7 @@ class Donkey extends Singleton
         {
             foreach($this->_modules as $module)
             {
-                if(strtoupper($module->name()) == strtoupper($target))
+                if(strtoupper($module->moduleName()) == strtoupper($target))
                 {
                     return $module;
                 }
@@ -121,13 +105,13 @@ class Donkey extends Singleton
     
     public function autoloads()
     {
-        $autoloadConfig = ConfigMgr::instance()->loadConfig('inc/config/autoloads_config','autoloadsConfig');
+        $autoloadConfig = ConfigMgr::instance()->getConfig('autoloadsConfig');
         foreach($autoloadConfig['helpers'] as $helper)
         {
-            if($this->_loader->fileExists('inc/helpers/'. $helper . EXT))
-                $this->_loader->getFile('inc/helpers/' . $helper . EXT);
+            if(Loader::instance()->fileExists('inc/helpers/'. $helper . EXT))
+                Loader::instance()->getFile('inc/helpers/' . $helper . EXT);
             else
-                $this->_loader->getFile('system/helpers/' . $helper . EXT);
+                Loader::instance()->getFile('system/helpers/' . $helper . EXT);
         }
     }
 }

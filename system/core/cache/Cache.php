@@ -45,7 +45,6 @@ class Cache
             break;
             default:
                 $this->loadDriver(); // On charge celui par défaut
-                return FALSE; 
             break;
         }
 

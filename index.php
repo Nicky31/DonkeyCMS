@@ -90,9 +90,7 @@ require SYS_PATH . 'libraries/ClassIndexer' . EXT;
 
 ClassIndexer::addDirsForbidden(array( LOG_DIR, 'langs', 'themes', 'nbproject', 'simpletest' ));
 ClassIndexer::enableCache(! DEBUG_MODE, CACHE_PATH . 'ClassIndexer');
-$classes = ClassIndexer::processDir(BASE_PATH);
-$Loader = Loader::instance($classes);
-
+$Loader = Loader::instance(ClassIndexer::processDir(BASE_PATH));
 $Donkey = Donkey::instance($Loader);
 $Donkey->run();
 

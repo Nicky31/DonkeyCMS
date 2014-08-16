@@ -17,11 +17,14 @@ abstract class Lang
     {
         $name = appendExt($name);
    
-        // Aucun chemin spécifié : on le détermine à partir du module à l'origine de cet appel
+        /*
+         * Aucun chemin spécifié : on le détermine à partir du module à l'origine de cet appel
+         * Utilisation déconseillée étant donnée cette de debug_backtrace() : performances douteuses
+         */
         if($dir == '')
         {
             list(, $callContext) = debug_backtrace();
-            $dir = MODS_DIR . SEP . $callContext['object']->module()->name() . '/langs';
+            $dir = MODS_DIR . SEP . $callContext['object']->module()->moduleName() . '/langs';
         }
         else
         {
@@ -34,6 +37,7 @@ abstract class Lang
         foreach($availableLangages as $curLangage)
         {
             $curLangage = basename($curLangage, SEP);
+
             if(file_exists($langPath = BASE_PATH . SEP . $dir . SEP . $curLangage . SEP . $name))
             {
                 $newTranslations = include $langPath;
@@ -57,13 +61,13 @@ abstract class Lang
     
     public static function tr($name, $args = array())
     {
-        // Contenus ne devant pas être traduits 
+        // Contenus contenant des espaces = ne doivent pas être traduits
         // (exceptions classe Lang disfonctionnant, tentative de traduction pourrait entrainer boucle infinie)
         if(strrpos($name, ' ') !== FALSE)
         {
             return $name;
         }
-
+        
         $cookieLang = self::cookieLang();
         // Langue stockée en cookie & donc choisie par l'utilisateur ?
         if(isset(self::$_translations[$cookieLang][$name]))
