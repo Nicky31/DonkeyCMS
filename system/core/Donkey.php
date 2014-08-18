@@ -7,13 +7,15 @@
 class Donkey extends Singleton
 {
     // Classe config du système
-    private $_sysConfig = NULL;
-    // Tableau des modules chargés
-    private $_modules   = array();
+    private $_sysConfig    = NULL;
+    // Module maître ( = celui appelé en premier par l'url)
+    private $_mainModule   = NULL;
+    // Tableau des modules secondaires
+    private $_minorModules = array();
     
-    protected function __construct($Loader)
+    protected function __construct()
     {
-        $Loader->autoloads();
+        Loader::instance()->autoloads();
         
         // Chargement configuration système
         $this->_sysConfig = ConfigMgr::instance()->getConfig('sysConfig');
@@ -27,83 +29,62 @@ class Donkey extends Singleton
             'action'     => $this->_sysConfig['defaultAction'],
             'args'       => array()
         );
-        
-        Input::init();
     }
     
     public function run()
     {
+        // Traitement de la route
         $route = Router::getRouteArray(Router::getPathInfo());
         Router::setCurRouteParams($route['args']);
         define('MAIN_MODULE',     $route['module']);
         define('MAIN_CONTROLLER', $route['controller']);
         define('MAIN_ACTION',     $route['action']);
 
-        $this->runModule($route['module'], $route['controller'], $route['action']);
+        // Lancement des modules
+        $modulesList = Loader::instance()->getEnabledModules();
+        foreach($modulesList as $curModule)
+        {
+            if($curModule['name'] == $route['module'])
+                $this->_mainModule = $this->instanciateModule($route['module']);
+            else
+                $this->_minorModules[] = $this->instanciateModule($curModule);
+        }
+        // Dossier inexistant, module désactivé ou non indiqué dans donkey_modules :
+        if($this->_mainModule == NULL) 
+            throw new DkException('module.inexistant', $route['module']);
+        assert('is_subclass_of($this->_mainModule, \'Module\') && \'Les classes modules doivent hériter de Module.\'');
 
+        $this->_mainModule->run($route['controller'], $route['action']);
         $this->finalRender();
     }
 
     // Génère et envoit la page finale
-    public function finalRender()
+    private function finalRender()
     {
-        $OutputContent = array_shift($this->_modules) -> render();
-        foreach($this->_modules as $module)
+        $OutputContent = $this->_mainModule->render();
+        foreach($this->_minorModules as $module)
             $module->partialRender($OutputContent);
 
         echo $OutputContent;
     }
     
-    public function runModule($module, $controller, $action)
+    /*
+     * Instancie et retourne le module $module
+     * Retourne NULL s'il est introuvable dans le dossier modules
+     * Instancie la classe système Module ou sa surcharge si elle existe dans le dossier du module
+     */
+    private function instanciateModule($module)
     {
         $moduleDir = MODS_PATH . strtolower($module) . SEP;
         if(!is_dir($moduleDir))
-        {
-            throw new DkException('module.inexistant', $module);
-        }
-                
-        // On détermine si une surcharge de la classe module est disponible
+            return NULL;
+
         $className = file_exists($moduleDir . ucfirst($module . MODULESUFFIX . EXT))
                         ? ucfirst($module . MODULESUFFIX) : 'Module';
-        $moduleObj = new $className($module);
-        $this->addModule($moduleObj);
-
-        if(!is_subclass_of($moduleObj, 'Module'))
-        {
-            throw new DkException('class.should_unherit', 'Module ' . ucfirst($module . MODULESUFFIX), 'Module');
-        }
-        
-        $moduleObj->run($controller, $action);
+        return new $className($module);
     }
     
-    public function addModule($module)
-    {
-        $this->_modules[] = $module;
-    }
-
-    public function module($target = NULL)
-    {
-        if($target === NULL)
-        {
-            return $this->_modules;
-        }
-        else if(is_numeric($target))
-        {
-            return $this->_modules[$target];
-        }
-        else
-        {
-            foreach($this->_modules as $module)
-            {
-                if(strtoupper($module->moduleName()) == strtoupper($target))
-                {
-                    return $module;
-                }
-            }
-        }
-    }
-    
-    public function autoloads()
+    private function autoloads()
     {
         $autoloadConfig = ConfigMgr::instance()->getConfig('autoloadsConfig');
         foreach($autoloadConfig['helpers'] as $helper)

@@ -72,12 +72,3 @@ function dbg($var)
     var_dump($var);
     echo '</pre> <br />';
 }
-
-/*
- * Retourne le nom du thème du module spécifié
- */
-
-function getTheme($module)
-{
-    return Donkey::instance()->module($module)->getTheme();
-}

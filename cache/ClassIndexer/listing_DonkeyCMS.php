@@ -26,8 +26,8 @@ return array (
   'Controller' => '/opt/lampp/htdocs/DonkeyCMS/system/core/module/Controller.php',
   'Model' => '/opt/lampp/htdocs/DonkeyCMS/system/core/module/Model.php',
   'Module' => '/opt/lampp/htdocs/DonkeyCMS/system/core/module/Module.php',
-  'ModuleComponent' => '/opt/lampp/htdocs/DonkeyCMS/system/core/module/ModuleComponent.php',
   'AntiFlood' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/AntiFlood.php',
   'ClassIndexer' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/ClassIndexer.php',
+  'ModulesSystemModel' => '/opt/lampp/htdocs/DonkeyCMS/system/models/ModulesSystemModel.php',
   'FinderTest' => '/opt/lampp/htdocs/DonkeyCMS/tests/Finder.test.php',
 );

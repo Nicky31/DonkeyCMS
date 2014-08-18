@@ -28,11 +28,6 @@ abstract class ExceptionManager
         self::$_enable = $enable;
     }
     
-    public static function disable()
-    {
-        self::enable(FALSE);
-    }
-    
     public static function attach($observer)
     {
         self::$_observers[] = $observer;
@@ -53,7 +48,6 @@ abstract class ExceptionManager
 
     public static function handleException(Exception $e)
     {     
-        // Traitement de l'exception si le manager est actif pour ne pas réveler certaines données en production
         if(self::$_enable)
         {
             self::printException($e);
@@ -64,7 +58,7 @@ abstract class ExceptionManager
                 self::notify(); 
             }
         }
-        
+
         exit;
     }
     

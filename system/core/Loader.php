@@ -34,7 +34,9 @@ class Loader extends Singleton
 
     public function autoloads()
     {   
-        require BASE_PATH . SEP . SYS_DIR . SEP . 'core/SystemHelper.php';
+        require SYS_PATH . 'core/SystemHelper.php';
+
+        ExceptionManager::enable(DEBUG_MODE);
         // Traductions de base du système
         Lang::loadTranslations('system', 'system/langs');
 
@@ -55,6 +57,21 @@ class Loader extends Singleton
         ConfigMgr::instance()->loadConfig('inc/config/sys_config', 'sysConfig');
         ConfigMgr::instance()->loadConfig('inc/config/databases_config', 'dbsConfig');
         ConfigMgr::instance()->loadConfig('inc/config/autoloads_config','autoloadsConfig');
+
+        // Chargement du gestionnaire de donnée entrante
+        Input::init();
+    }
+
+    public function getEnabledModules()
+    {
+        static $modulesList = NULL;
+        if($modulesList == NULL)
+        {
+            $modelName = 'ModulesSystem'. MODELSUFFIX;
+            $modulesModel = new $modelName('donkeyDb');
+            $modulesList = $modulesModel->allModules(TRUE);
+        }
+        return $modulesList;
     }
 
     public function getFile($filePath, $returnContent = FALSE, $force = FALSE)

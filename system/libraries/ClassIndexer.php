@@ -14,9 +14,9 @@ abstract class ClassIndexer
     // Dossier du cache
     private static $_cacheDir      = NULL;
 
-    public static function init($ext = '.php', $dirsForbidden = array())
+    public static function init($enableCache, $cacheDir, $dirsForbidden = array())
     {
-        self::setExt($ext);
+        self::setCache($enableCache, $cacheDir);
         self::addDirsForbidden($dirsForbidden);
     }
 
@@ -30,14 +30,10 @@ abstract class ClassIndexer
         self::$_dirsForbidden = array_merge(self::$_dirsForbidden, $dirsForbidden);
     }
 
-    public static function enableCache($b, $cacheDir = '')
+    public static function setCache($enabled, $cacheDir)
     {   
-        self::$_cacheEnabled = $b;
-
-        if($b)
-        {
-            self::$_cacheDir = $cacheDir;
-        }
+        self::$_cacheEnabled = $enabled;
+        self::$_cacheDir = $cacheDir;
     }
 
     /*
@@ -46,12 +42,13 @@ abstract class ClassIndexer
      */
     public static function processDir($dirPath)
     {
+        $cachePath = rtrim(self::$_cacheDir) . DIRECTORY_SEPARATOR . self::cacheName($dirPath);
         // Récupération du cache si activé
         if(self::$_cacheEnabled)
         {
-            if(file_exists($path = rtrim(self::$_cacheDir) . DIRECTORY_SEPARATOR . self::cacheName($dirPath)))
+            if(file_exists($cachePath))
             {
-                return include $path;
+                return include $cachePath;
             }
         }
 
@@ -64,11 +61,7 @@ abstract class ClassIndexer
             }
         }
 
-        // Mise en cache si activé
-        if(self::$_cacheEnabled)
-        {
-            file_put_contents($path, '<?php '. "\n\nreturn " . var_export($classes, true) . ';');
-        }
+        file_put_contents($cachePath, '<?php '. "\n\nreturn " . var_export($classes, true) . ';');
 
         return $classes;
     }
@@ -94,7 +87,7 @@ abstract class ClassIndexer
         {
             if(strpos($subElement, '.') !== FALSE) // C'est un fichier
             {
-                if(strpos($subElement, EXT) !== FALSE) // Bien un fichier PHP
+                if(strpos($subElement, self::$_ext) !== FALSE) // Bien un fichier PHP
                 {
                     $files[] = $subElement;
                 }

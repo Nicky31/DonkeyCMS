@@ -25,7 +25,7 @@ define('BASE_URL',   'http://localhost/DonkeyCMS');
  * Mettre true en période de développement pour activer les assertions et erreurs PHP
  * Mettre false en période de production pour gagner des performances et cacher des informations sensibles visibles sur les erreurs
  */
-define('DEBUG_MODE', TRUE);
+define('DEBUG_MODE', FALSE);
 /*
  * Langue par défaut :
  * Valeur = nom des sous dossiers correspondants à la langue dans chaque module
@@ -75,6 +75,7 @@ if(DEBUG_MODE)
 {
     error_reporting(E_ALL | E_STRICT);
     assert_options(ASSERT_ACTIVE, 1);
+    assert_options(ASSERT_BAIL, 1);
 }
 else
 {
@@ -88,10 +89,11 @@ require SYS_PATH . 'core/Singleton' 		. EXT;
 require SYS_PATH . 'core/Loader'    		. EXT;
 require SYS_PATH . 'libraries/ClassIndexer' . EXT;
 
-ClassIndexer::addDirsForbidden(array( LOG_DIR, 'langs', 'themes', 'nbproject', 'simpletest' ));
-ClassIndexer::enableCache(! DEBUG_MODE, CACHE_PATH . 'ClassIndexer');
-$Loader = Loader::instance(ClassIndexer::processDir(BASE_PATH));
-$Donkey = Donkey::instance($Loader);
+ClassIndexer::init(!DEBUG_MODE, CACHE_PATH . 'ClassIndexer', 
+				   array( LOG_DIR, 'langs', 'themes', 'nbproject', 'simpletest' ));
+Loader::instance(ClassIndexer::processDir(BASE_PATH));
+
+$Donkey = Donkey::instance();
 $Donkey->run();
 
 $time_end = microtime(true);
