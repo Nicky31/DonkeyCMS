@@ -53,7 +53,8 @@ class Donkey extends Singleton
         if($this->_mainModule == NULL) 
             throw new DkException('module.inexistant', $route['module']);
         assert('is_subclass_of($this->_mainModule, \'Module\') && \'Les classes modules doivent hériter de Module.\'');
-
+        
+        Hook::instance()->exec('pre_main_module');
         $this->_mainModule->run($route['controller'], $route['action']);
         $this->finalRender();
     }

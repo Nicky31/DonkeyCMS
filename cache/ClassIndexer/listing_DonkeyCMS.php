@@ -1,6 +1,7 @@
 <?php 
 
 return array (
+  'PigRegistry' => '/opt/lampp/htdocs/DonkeyCMS/inc/libraries/PigRegistry.php',
   'HomeModule' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/HomeModule.php',
   'HomeController' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/controllers/HomeController.php',
   'TestController' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/controllers/TestController.php',
@@ -28,6 +29,7 @@ return array (
   'Module' => '/opt/lampp/htdocs/DonkeyCMS/system/core/module/Module.php',
   'AntiFlood' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/AntiFlood.php',
   'ClassIndexer' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/ClassIndexer.php',
+  'Hook' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/Hook.php',
   'ModulesSystemModel' => '/opt/lampp/htdocs/DonkeyCMS/system/models/ModulesSystemModel.php',
   'FinderTest' => '/opt/lampp/htdocs/DonkeyCMS/tests/Finder.test.php',
 );
