@@ -54,24 +54,16 @@ class Loader extends Singleton
         ));
 
         // Configurations système
-        ConfigMgr::instance()->loadConfig('inc/config/sys_config', 'sysConfig');
+        $sysConfig = ConfigMgr::instance()->loadConfig('inc/config/sys_config', 'sysConfig');
         ConfigMgr::instance()->loadConfig('inc/config/databases_config', 'dbsConfig');
         ConfigMgr::instance()->loadConfig('inc/config/autoloads_config','autoloadsConfig');
 
         // Chargement du gestionnaire de donnée entrante
         Input::init();
-    }
 
-    public function getEnabledModules()
-    {
-        static $modulesList = NULL;
-        if($modulesList == NULL)
-        {
-            $modelName = 'ModulesSystem'. MODELSUFFIX;
-            $modulesModel = new $modelName('donkeyDb');
-            $modulesList = $modulesModel->allModules(TRUE);
-        }
-        return $modulesList;
+        // Chargement Modèle des modules
+        $modelName = 'ModulesSystem'. Model::SUFFIX;
+        PigRegistry::get_instance()->set('donkey.modulesModel', new $modelName('donkeyDb'));
     }
 
     public function getFile($filePath, $returnContent = FALSE, $force = FALSE)

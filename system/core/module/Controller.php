@@ -5,7 +5,12 @@
 
 abstract class Controller
 {
-    protected $_module;
+    // Suffixe utilisé par tous les controllers
+    const     SUFFIX         = 'Controller';
+    // Action par défaut si non renseignée par l'url ou invalide
+    const     DEFAULT_ACTION = 'index'; 
+    // Objet module auquel le controller appartient
+    protected $_module       = NULL;
 
     public function __construct($module)
     {
@@ -45,7 +50,7 @@ abstract class Controller
     
     public function model($modelName, $dbName = '')
     {
-        $modelName = $modelName . MODELSUFFIX;
+        $modelName = $modelName . Model::SUFFIX;
 
         $model = new $modelName($dbName);
         $this->_module->addModel($model);

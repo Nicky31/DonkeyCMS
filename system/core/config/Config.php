@@ -30,19 +30,6 @@ class Config implements ArrayAccess
         throw new DkException('config.inexistant_item', $k, $this->_name);
     }
     
-    public function toConstants()
-    {
-        foreach($this->_content as $k => $v)
-        {
-            if(is_array($v)) // Ne define pas les sous valeurs
-            {
-                continue;
-            }
-            
-            define(strtoupper($k), $v);
-        }
-    }
-    
     public function rewriteItem($k,$v)
     {
         $this->_content[$k] = $v;

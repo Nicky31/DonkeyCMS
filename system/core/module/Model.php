@@ -6,8 +6,10 @@
 
 abstract class Model
 {
+    // Suffixe utilisé par tous les models
+    const     SUFFIX = 'Model';
     // Objet (PDO) représentant la connexion
-    protected $_db = NULL;
+    protected $_db   = NULL;
     
     public function __construct($dbName)
     {

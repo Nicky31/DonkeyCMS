@@ -42,14 +42,8 @@ function redirect($url = '', $time = 0)
 }
 
 function refresh()
-{
-    $route = array(
-        'module'     => MAIN_MODULE,
-        'controller' => MAIN_CONTROLLER,
-        'action'     => MAIN_ACTION
-    );
-   
-    return redirect($route);
+{   
+    return redirect(array('module' => MAIN_MODULE));
 }
 
 function siteUrl($module = array(), $gets = array())

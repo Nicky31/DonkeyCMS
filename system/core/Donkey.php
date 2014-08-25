@@ -6,8 +6,6 @@
 
 class Donkey extends Singleton
 {
-    // Classe config du système
-    private $_sysConfig    = NULL;
     // Module maître ( = celui appelé en premier par l'url)
     private $_mainModule   = NULL;
     // Tableau des modules secondaires
@@ -15,18 +13,19 @@ class Donkey extends Singleton
     
     protected function __construct()
     {
+        // Chargement de toutes les dépendances du système
         Loader::instance()->autoloads();
-        
-        // Chargement configuration système
-        $this->_sysConfig = ConfigMgr::instance()->getConfig('sysConfig');
-        $this->_sysConfig->toConstants();
         $this->autoloads();
+
+        $sysConfig = ConfigMgr::instance()->getConfig('sysConfig');
+        define('DATASDONKEY', $sysConfig->item('datasDonkey'));
+        define('URIEXT',      $sysConfig->item('uriExt'));
         
         // Router
         Router::$_defaultRoute = array(
-            'module'     => $this->_sysConfig['defaultModule'],
-            'controller' => $this->_sysConfig['defaultController'],
-            'action'     => $this->_sysConfig['defaultAction'],
+            'module'     => $sysConfig['defaultModule'],
+            'controller' => '',
+            'action'     => '',
             'args'       => array()
         );
     }
@@ -36,16 +35,13 @@ class Donkey extends Singleton
         // Traitement de la route
         $route = Router::getRouteArray(Router::getPathInfo());
         Router::setCurRouteParams($route['args']);
-        define('MAIN_MODULE',     $route['module']);
-        define('MAIN_CONTROLLER', $route['controller']);
-        define('MAIN_ACTION',     $route['action']);
 
         // Lancement des modules
-        $modulesList = Loader::instance()->getEnabledModules();
+        $modulesList = PigRegistry::get_instance()->get('donkey.modulesModel')->allModules(TRUE);
         foreach($modulesList as $curModule)
         {
             if($curModule['name'] == $route['module'])
-                $this->_mainModule = $this->instanciateModule($route['module']);
+                $this->_mainModule = $this->instanciateModule($curModule);
             else
                 $this->_minorModules[] = $this->instanciateModule($curModule);
         }
@@ -54,6 +50,7 @@ class Donkey extends Singleton
             throw new DkException('module.inexistant', $route['module']);
         assert('is_subclass_of($this->_mainModule, \'Module\') && \'Les classes modules doivent hériter de Module.\'');
         
+        define('MAIN_MODULE', $route['module']);
         Hook::instance()->exec('pre_main_module');
         $this->_mainModule->run($route['controller'], $route['action']);
         $this->finalRender();
@@ -70,18 +67,18 @@ class Donkey extends Singleton
     }
     
     /*
-     * Instancie et retourne le module $module
+     * Instancie et retourne la surcharge de Module du module $module['name']
      * Retourne NULL s'il est introuvable dans le dossier modules
-     * Instancie la classe système Module ou sa surcharge si elle existe dans le dossier du module
      */
     private function instanciateModule($module)
     {
-        $moduleDir = MODS_PATH . strtolower($module) . SEP;
+        $moduleDir = MODS_PATH . strtolower($module['name']) . SEP;
         if(!is_dir($moduleDir))
             return NULL;
+        $module['settings'] = empty($module['settings']) 
+                                ? array() : unserialize($module['settings']);
 
-        $className = file_exists($moduleDir . ucfirst($module . MODULESUFFIX . EXT))
-                        ? ucfirst($module . MODULESUFFIX) : 'Module';
+        $className = ucfirst($module['name'] . Module::SUFFIX);
         return new $className($module);
     }
     
