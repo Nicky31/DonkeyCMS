@@ -16,7 +16,7 @@ class DonkeyUser implements IUserDataClass
     // Objet user encapsulant des données supplémentaires propres à chaque module
     protected $_customUser    = NULL;
 
-    protected $id 		      = -1;
+    protected $id             = -1;
     protected $username       = NULL;
     protected $password       = NULL;
     // Droits d'administration sur Donkey ? 
