@@ -14,17 +14,17 @@ function imgUrl()
 
 function img()
 {
-    return '<img src="'. call_user_func_array('Finder::imageUrl', func_get_args()) .'" />';   
+    return '<img src="'. call_user_func_array('Finder::imageUrl', func_get_args()) .'" />' . PHP_EOL;   
 }
 
 function css() 
 {
-    return '<link rel="stylesheet" type="text/css" href="'. call_user_func_array('Finder::cssUrl', func_get_args()) .'" />';
+    return '<link rel="stylesheet" type="text/css" href="'. call_user_func_array('Finder::cssUrl', func_get_args()) .'" />' . PHP_EOL;
 }
 
 function js() 
 {
-    return '<script src="'. call_user_func_array('Finder::jsUrl', func_get_args()) .'"></script>';
+    return '<script src="'. call_user_func_array('Finder::jsUrl', func_get_args()) .'"></script>' . PHP_EOL;
 }
 
 function redirect($url = '', $time = 0)

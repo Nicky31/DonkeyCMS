@@ -61,8 +61,8 @@ class Loader extends Singleton
         // Chargement du gestionnaire de donnée entrante
         Input::init();
 
-        // Chargement Modèle des modules
-        $modelName = 'ModulesSystem'. Model::SUFFIX;
+        // Chargement des modèles système
+        $modelName = 'DonkeyModules'. Model::SUFFIX;
         PigRegistry::get_instance()->set('donkey.modulesModel', new $modelName('donkeyDb'));
     }
 

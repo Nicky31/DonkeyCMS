@@ -36,11 +36,11 @@ class Hook extends Singleton
 	{
 		if(empty($this->_hooks[$hookName]))
 		{
-			$this->_hooks[$hookName] = array($callback);
+            $this->_hooks[$hookName] = array($callback);
 		}
 		else
 		{
-			$this->_hooks[$hookName][] = $callback;
+            $this->_hooks[$hookName][] = $callback;
 		}
 
 		return $this;

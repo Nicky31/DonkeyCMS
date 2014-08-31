@@ -74,7 +74,7 @@ abstract class Controller
     // Actions devant être communes à tous les controllers : changement thème/langue
     public function selectTheme()
     {
-        call_user_func_array(array($this, DEFAULTACTION), array());
+        call_user_func_array(array($this, static::DEFAULT_ACTION), array());
         echo redirect();
 
         if(!$theme = Input::get(0, 'GET', array( 'pattern'   => '#^[a-z0-9_-]{1,16}$#i' )))
@@ -91,7 +91,7 @@ abstract class Controller
     
     public function selectLang()
     {
-        call_user_func_array(array($this, DEFAULTACTION), array());
+        call_user_func_array(array($this, static::DEFAULT_ACTION), array());
         echo redirect(); 
 
         if(!$lang = Input::get(0, 'GET', array( 'pattern'   => '#^[a-z]{2,3}$#i' )))

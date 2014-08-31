@@ -25,6 +25,11 @@ abstract class Module
     // Views chargées par le module et extraites lors de l'affichage du layout
     protected $_views            = array();
 
+    // Fichier layout utilisé par défaut avec l'extension
+    protected $_layout           = 'template.php';
+    // Détermine si le module peut charger un contrôleur depuis Module::run()
+    protected $_runnable         = TRUE;
+
     public function __construct($module)
     {
         $this->_moduleName = $module['name'];
@@ -35,16 +40,19 @@ abstract class Module
     
     public function run($controller, $action)
     {
+        if(!$this->_runnable)
+            return FALSE;
+
         $controller = $controller == '' ? static::DEFAULT_CONTROLLER : $controller;
 
         if($this->_controller == NULL)
         {
-            if(!file_exists(MODS_PATH . $this->_moduleName . '/controllers/' . ucfirst($controller . Controller::SUFFIX) . EXT))
+            $controllerName = ucfirst($controller . Controller::SUFFIX);
+            if(!file_exists(MODS_PATH . $this->_moduleName . '/controllers/' . $controllerName . EXT))
             {
                 throw new DkException('controller.inexistant', ucfirst($controller . Controller::SUFFIX), $this->_moduleName);
             } 
-
-            $controllerName = ucfirst($controller . Controller::SUFFIX);
+            
             $this->_controller = new $controllerName($this);
         }
 
@@ -52,6 +60,8 @@ abstract class Module
             call_user_func(array($this->_controller,$action));
         else
             call_user_func(array($this->_controller, $controllerName::DEFAULT_ACTION));
+
+        return TRUE;
     }
     
     public function name()
@@ -108,7 +118,7 @@ abstract class Module
      */
     public function render()
     {
-        return new OutputContent(Finder::layoutPath('template.php', $this->_moduleName, $this->getTheme()), $this->_views);  
+        return new OutputContent(Finder::layoutPath($this->_layout, $this->_moduleName, $this->getTheme()), $this->_views);  
     }
 
     /*

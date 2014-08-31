@@ -2,7 +2,12 @@
 
 return array (
   'PigRegistry' => '/opt/lampp/htdocs/DonkeyCMS/inc/libraries/PigRegistry.php',
+  'AdminModule' => '/opt/lampp/htdocs/DonkeyCMS/modules/admin/AdminModule.php',
+  'AdminUser' => '/opt/lampp/htdocs/DonkeyCMS/modules/admin/AdminUser.php',
+  'AdminHomeController' => '/opt/lampp/htdocs/DonkeyCMS/modules/admin/controllers/AdminHomeController.php',
+  'LoginController' => '/opt/lampp/htdocs/DonkeyCMS/modules/admin/controllers/LoginController.php',
   'HomeModule' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/HomeModule.php',
+  'HomeUser' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/HomeUser.php',
   'HomeController' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/controllers/HomeController.php',
   'TestController' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/controllers/TestController.php',
   'TestModel' => '/opt/lampp/htdocs/DonkeyCMS/modules/home/models/TestModel.php',
@@ -29,7 +34,11 @@ return array (
   'Module' => '/opt/lampp/htdocs/DonkeyCMS/system/core/module/Module.php',
   'AntiFlood' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/AntiFlood.php',
   'ClassIndexer' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/ClassIndexer.php',
+  'DonkeyUser' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/DonkeyUser/DonkeyUser.php',
+  'DonkeyUsersMgr' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/DonkeyUser/DonkeyUsersMgr.php',
+  'DonkeyUsersModel' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/DonkeyUser/DonkeyUsersModel.php',
+  'IUserDataClass' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/DonkeyUser/IUserDataClass.php',
   'Hook' => '/opt/lampp/htdocs/DonkeyCMS/system/libraries/Hook.php',
-  'ModulesSystemModel' => '/opt/lampp/htdocs/DonkeyCMS/system/models/ModulesSystemModel.php',
+  'DonkeyModulesModel' => '/opt/lampp/htdocs/DonkeyCMS/system/models/DonkeyModulesModel.php',
   'FinderTest' => '/opt/lampp/htdocs/DonkeyCMS/tests/Finder.test.php',
 );

@@ -35,7 +35,10 @@ class Donkey extends Singleton
         // Traitement de la route
         $route = Router::getRouteArray(Router::getPathInfo());
         Router::setCurRouteParams($route['args']);
+        define('MAIN_MODULE', $route['module']);
 
+        session_start();
+        
         // Lancement des modules
         $modulesList = PigRegistry::get_instance()->get('donkey.modulesModel')->allModules(TRUE);
         foreach($modulesList as $curModule)
@@ -50,7 +53,6 @@ class Donkey extends Singleton
             throw new DkException('module.inexistant', $route['module']);
         assert('is_subclass_of($this->_mainModule, \'Module\') && \'Les classes modules doivent hériter de Module.\'');
         
-        define('MAIN_MODULE', $route['module']);
         Hook::instance()->exec('pre_main_module');
         $this->_mainModule->run($route['controller'], $route['action']);
         $this->finalRender();

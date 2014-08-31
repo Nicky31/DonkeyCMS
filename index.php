@@ -82,8 +82,6 @@ else
     error_reporting(0);
     assert_options(ASSERT_ACTIVE, 0);
 }
-    
-session_start(); 
 
 require SYS_PATH . 'core/Singleton' 		. EXT;
 require SYS_PATH . 'core/Loader'    		. EXT;

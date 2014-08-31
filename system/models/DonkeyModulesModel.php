@@ -1,6 +1,6 @@
 <?php
 
-class ModulesSystemModel extends Model
+class DonkeyModulesModel extends Model
 {
 	public function allModules($onlyEnabled = FALSE)
 	{
