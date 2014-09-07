@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Représente un contenu html manipulé par la classe Output pour être envoyé au navigateur
  * Facilite les traitements sur le contenu

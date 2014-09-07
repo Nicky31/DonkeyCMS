@@ -58,7 +58,7 @@ abstract class ExceptionManager
                 self::notify(); 
             }
         }
-
+        
         exit;
     }
     

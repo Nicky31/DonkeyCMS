@@ -63,7 +63,7 @@ class Loader extends Singleton
 
         // Chargement des modèles système
         $modelName = 'DonkeyModules'. Model::SUFFIX;
-        PigRegistry::get_instance()->set('donkey.modulesModel', new $modelName('donkeyDb'));
+        \PigRegistry::get_instance()->set('donkey.modulesModel', new $modelName('donkeyDb'));
     }
 
     public function getFile($filePath, $returnContent = FALSE, $force = FALSE)
@@ -101,6 +101,7 @@ class Loader extends Singleton
 
     public function loadClass($className)
     {
+        $className = '\\'. trim($className, '\\');
         // Classe inexistante
         if(!$this->classExists($className))
         {

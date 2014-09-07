@@ -1,6 +1,7 @@
 <?php
+namespace HomeModule;
 
-class TestController extends Controller
+class TestController extends \Controller
 {
     public function index()
     {

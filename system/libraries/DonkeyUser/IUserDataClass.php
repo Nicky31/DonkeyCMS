@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Interface de toutes les classes utilisateurs personalisées 
  */

@@ -1,7 +1,8 @@
 <?php
-    /*
-     * Indexe toutes les classes du projet afin de pouvoir les inclure dynamiquement (Autoloader)
-     */
+
+/*
+ * Indexe toutes les classes du projet afin de pouvoir les inclure dynamiquement (Autoloader)
+ */
 
 abstract class ClassIndexer
 {
@@ -14,10 +15,15 @@ abstract class ClassIndexer
     // Dossier du cache
     private static $_cacheDir      = NULL;
 
+    // Parser PHP
+    private static $_phpParser     = NULL;
+
     public static function init($enableCache, $cacheDir, $dirsForbidden = array())
     {
         self::setCache($enableCache, $cacheDir);
         self::addDirsForbidden($dirsForbidden);
+        require_once __DIR__ . '/PHPParser.php';
+        self::$_phpParser = new PHPParser;
     }
 
     public static function setExt($ext)
@@ -60,7 +66,7 @@ abstract class ClassIndexer
                 $classes = array_merge($classes, $newClasses);
             }
         }
-
+        
         file_put_contents($cachePath, '<?php '. "\n\nreturn " . var_export($classes, true) . ';');
 
         return $classes;
@@ -105,26 +111,15 @@ abstract class ClassIndexer
     }
 
     /*
-     *  Cherche une ou plusieurs classes & interfaces dans le fichier dont le chemin est indiqué dans $filePath.
-     *  Renvoit les classes/interfaces du fichier sous forme d'array numéroté ou FALSE si aucune n'est trouvée
+     * Cherche une ou plusieurs classes & interfaces dans le fichier dont le chemin est indiqué dans $filePath.
+     * Renvoit les classes/interfaces du fichier sous forme d'array numéroté ou FALSE si aucune n'est trouvée
      */
     public static function findClass($filePath)
     {
-        $newClasses = array();
-        $fileTokens = token_get_all(file_get_contents($filePath));
-        $nbTokens = count($fileTokens);
-
-        for($i = 0; $i < $nbTokens; ++$i)
-        {
-            // Mot-clé "class" ou "interface"
-            if($fileTokens[$i][0] == T_CLASS || $fileTokens[$i][0] == T_INTERFACE)
-            {
-                for($i; $fileTokens[$i][0] != T_STRING; ++$i);
-                $newClasses[$fileTokens[$i][1]] = $filePath;
-            }
-        }
-
-        if(count($newClasses))
+        self::$_phpParser->setSourceFile($filePath);
+        $newClasses = self::$_phpParser->extractDatas();
+        
+        if(!empty($newClasses))
             return $newClasses;
         else
             return FALSE;

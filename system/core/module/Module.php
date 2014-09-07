@@ -53,6 +53,7 @@ abstract class Module
                 throw new DkException('controller.inexistant', ucfirst($controller . Controller::SUFFIX), $this->_moduleName);
             } 
             
+            $controllerName = ucfirst($this->_moduleName . self::SUFFIX) .'\\'. $controllerName;
             $this->_controller = new $controllerName($this);
         }
 
@@ -130,4 +131,12 @@ abstract class Module
     {
 
     }    
+
+    /*
+     * Renvoit un boolean indiquant si le module courant est oui ou non le module maître
+     */
+    public function isMain()
+    {  
+        return ucfirst($this->_moduleName . self::SUFFIX) === (ucfirst(MAIN_MODULE) . self::SUFFIX);
+    }
  }

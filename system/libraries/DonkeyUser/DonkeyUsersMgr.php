@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * Interface entre la librairie DonkeyUser et l'utilisateur
+ * Permet à ce dernier de récupérer facilement l'objet DonkeyUser associés aux identifiants
+ * Les méthodes customUser, customUserClass, et updateUser devraient être utilisées  
+ * uniquement par DonkeyUser
+ * Ne s'occupe en aucun cas du stockage de l'objet utilisateur
+ * SessionHelper.php permet néanmoins son stockage et son accès simplement dans $_SESSION
+ */
+
 class DonkeyUsersMgr extends Singleton
 {
-    protected $_usersModel 		= NULL;
+    protected $_usersModel      = NULL;
     // Classe user personnalisée du module maître courant
     protected $_customUserClass = NULL;
 
@@ -12,8 +21,10 @@ class DonkeyUsersMgr extends Singleton
         $this->_usersModel = new $modelName('donkeyDb');
         Loader::instance()->getFile(__DIR__ . DIRECTORY_SEPARATOR . 'SessionHelper.php');
 
-        $customUsrClassConstant = ucfirst(MAIN_MODULE) . Module::SUFFIX . '::CUSTOM_USER_CLASS';
-        $this->_customUserClass = defined($customUsrClassConstant) ? constant($customUsrClassConstant) : NULL;
+        $mainModuleName = ucfirst(MAIN_MODULE) . Module::SUFFIX;
+        $customUsrClassConstant = $mainModuleName .'\\'. $mainModuleName .'::CUSTOM_USER_CLASS';
+        $this->_customUserClass = defined($customUsrClassConstant) ? 
+                                    $mainModuleName .'\\'. constant($customUsrClassConstant) : NULL;
     }
 
     public function customUserClass()

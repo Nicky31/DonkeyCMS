@@ -1,6 +1,7 @@
 <?php
+namespace HomeModule;
 
-class HomeUser implements IUserDataClass
+class HomeUser implements \IUserDataClass
 {
 	public $titre = NULL;
 

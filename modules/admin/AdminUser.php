@@ -1,6 +1,7 @@
 <?php
+namespace AdminModule;
 
-class AdminUser implements IUserDataClass
+class AdminUser implements \IUserDataClass
 {
 	public $permissions = 0;
 

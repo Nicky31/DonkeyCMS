@@ -1,4 +1,5 @@
- <?php
+<?php
+ 
 /*
  * Classe mère de tous les controllers
  */
@@ -50,7 +51,7 @@ abstract class Controller
     
     public function model($modelName, $dbName = '')
     {
-        $modelName = $modelName . Model::SUFFIX;
+        $modelName = ucfirst($this->_moduleName . Module::SUFFIX) .'\\'. $modelName . Model::SUFFIX;
 
         $model = new $modelName($dbName);
         $this->_module->addModel($model);
@@ -62,7 +63,7 @@ abstract class Controller
     {
         $view = new OutputContent(Finder::viewPath($name, $this->_module->name(), $this->_module->getTheme()), $params);
         $this->addView($view, $var);
-            
+        
         return $view;
     }
 

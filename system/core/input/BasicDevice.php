@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Gestion des tableaux de données entrantes
  */

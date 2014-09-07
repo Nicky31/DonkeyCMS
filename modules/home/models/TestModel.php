@@ -1,6 +1,7 @@
 <?php
+namespace HomeModule;
 
-class TestModel extends Model
+class TestModel extends \Model
 {
     public function test()
     {

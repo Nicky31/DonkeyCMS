@@ -1,6 +1,7 @@
 <?php
-    
-class HomeController extends Controller
+namespace HomeModule;
+
+class HomeController extends \Controller
 {
     public function __construct($module)
     {
@@ -11,22 +12,23 @@ class HomeController extends Controller
     
     public function index()
     {
-        $cache = new Cache('hometest');
+        $cache = new \Cache('hometest');
         if($cache->isNew())
         {
-            if(($var = Input::get(0, 'GET')) === NULL)
+            if(($var = \Input::get(0, 'GET')) === NULL)
             {
                 $var = 'param non renseigné';
             }
 
             $cache -> save(0,
                 $this->view('test.php', array('var' => $var))
-                    -> at(OutputContent::POS_START)
+                    -> at(\OutputContent::POS_START)
                     -> insertContent('<b>Ajout texte manuellement au debut de la vue</b>')
             );
         }
         else
         {
+            echo 'cache';
             $this->addView($cache->getDatas());
         }
     }

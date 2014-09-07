@@ -32,7 +32,7 @@ abstract class Input
     /*
      * Enregistre une closure gérant un nouveau type de support
      */
-    public static function registerInputDevice($deviceName, Closure $c)
+    public static function registerInputDevice($deviceName, \Closure $c)
     {
         if(isset(self::$_devices[$deviceName]))
         {

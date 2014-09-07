@@ -1,6 +1,7 @@
 <?php
+namespace AdminModule;
 
-class AdminHomeController extends Controller
+class HomeController extends \Controller
 {
 	public function __construct($module)
 	{

@@ -1,6 +1,7 @@
 <?php
+namespace AdminModule;
 
-class LoginController extends Controller
+class LoginController extends \Controller
 {
 
 	public function __construct($module)

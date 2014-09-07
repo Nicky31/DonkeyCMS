@@ -16,11 +16,11 @@ class Donkey extends Singleton
         // Chargement de toutes les dépendances du système
         Loader::instance()->autoloads();
         $this->autoloads();
-
         $sysConfig = ConfigMgr::instance()->getConfig('sysConfig');
+
         define('DATASDONKEY', $sysConfig->item('datasDonkey'));
         define('URIEXT',      $sysConfig->item('uriExt'));
-        
+
         // Router
         Router::$_defaultRoute = array(
             'module'     => $sysConfig['defaultModule'],
@@ -81,6 +81,7 @@ class Donkey extends Singleton
                                 ? array() : unserialize($module['settings']);
 
         $className = ucfirst($module['name'] . Module::SUFFIX);
+        $className .= '\\'. $className;
         return new $className($module);
     }
     
